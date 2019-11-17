@@ -1,3 +1,9 @@
+
+
+
+
+ 
+
 const express = require('express')
 const cors = require('cors')
 const mongoose = require('mongoose')
@@ -12,14 +18,7 @@ app.use(express.json())
 
 const uri = process.env.ATLAS_URI
 
-// const serverOptions = {
-//     poolSize: 100,
-//     socketOptions: {
-//       socketTimeoutMS: 6000000
-//     }
-//   };
-// console.log(uri)
-mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true, useFindAndModify: false})
+mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true, useFindAndModify: false })
 
 const connection = mongoose.connection
 connection.once('open', () => {

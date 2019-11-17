@@ -1,6 +1,10 @@
 const router = require('express').Router()
 const cheerio = require('cheerio');
 const Nightmare = require('nightmare');
+const axios = require('axios')
+const queryString = require('query-string');
+//imports .env variables
+require('dotenv').config()
 
 //models
 const Theater = require('../models/theater.model')
@@ -8,8 +12,11 @@ const Movie = require('../models/movie.model')
 
 
 /*=====  Test entries  ======*/
-let theaters = ['AMC PACIFIC PLACE 11', 'MAJESTIC BAY THEATRE']
-let dates = ['?date=2019-11-17']
+let theaters = ['AMC PACIFIC PLACE 11']
+let dates = ['2019-11-17']
+/*=============================================
+=            Helper Functions            =
+=============================================*/
 
 let getMovieInfo = (theater, dates) => {
     let nightmare = Nightmare();
@@ -31,24 +38,31 @@ let getMovieInfo = (theater, dates) => {
             // console.log(items)
             return nightmare
                 //after searching for the theater get and getting the correct link from the search results 
-                .goto(items[0] + dates)
+                .goto(items[0] + '?date=' + dates)
                 .wait()
                 //the primary container holding movie information 
-                .evaluate(() => { return document.querySelector('.fd-theater').innerHTML })
+                .evaluate(() => { return document.querySelector('#page').innerHTML })
                 .end()
                 .then((html2) => {
                     let $ = cheerio.load(html2)
 
+
                     let moviesAndTimes = []
 
+                    //grab the address 
+                    //get rid of newlines and extra whitespace
+                    let address = $('.subnav__link-item--address').find('span').text().replace(/\n/gi, '').replace(/ +(?= )/g, "").trim()
+                    //grab movie information 
                     $('.fd-movie').each((i, el) => {
+                        //get ride of the '(year)'
+                        let nameTrim = $(el).find('.fd-movie__title').find('a.dark').text()
+                        if (nameTrim.indexOf('(') != -1) { nameTrim = nameTrim.substring(0, nameTrim.indexOf('(')).trim() }
+
                         let item = {
-
-                            //***add the poster as well***//
-
-                            name: $(el).find('.fd-movie__title').find('a.dark').text(),
+                            name: nameTrim,
                             times: `${$(el).find('.showtime-btn').text()}`,
-                            date: dates
+                            date: dates,
+                            poster: $(el).find('.fd-movie__poster').find('img').attr('src')
                         }
                         //had to get the links seperatly as it would only return one link if called within the 'item' object
                         let found = []
@@ -63,13 +77,25 @@ let getMovieInfo = (theater, dates) => {
                         moviesAndTimes.push(item)
                     })
 
-                    let formattedMovies = movieTimesFix(moviesAndTimes)
+                    movieTimesFix(moviesAndTimes)
+                    fixPosterLinks(moviesAndTimes)
 
-                    formattedMovies.push({
-                        theaterName: theater
+                    moviesAndTimes.push({
+                        theaterName: theater,
+                        address: address
                     })
-                    console.log(formattedMovies)
                     // console.log(moviesAndTimes)
+                    return moviesAndTimes
+
+                    /*=============================================
+                    =            Add data to database           =
+                    =============================================*/
+
+
+
+                    /*=====  End of Add data to  ======*/
+
+
                 })
         })
         .catch(error => {
@@ -88,23 +114,112 @@ let movieTimesFix = movies => {
     });
     return movies
 }
+//a function the adds 'https:' to the begining of the poster link 
+let fixPosterLinks = movies => {
+    //iterate through each movie 
+    movies.forEach(mov => {
+        //grab the poster link 
+        //add 'http:' to be front of the string 
+        mov.poster = 'https:' + mov.poster
+    })
+}
+//to maintain DRY when adding movies to db
+let addMovies = (movies, searchBy, res) => {
+
+    Movie.insertMany(movies)
+        .then(dbMovies => {
+            //associate each movie with the theater 
+            dbMovies.forEach(mov => {
+                Theater.findOneAndUpdate(searchBy, { $push: { movies: mov.id } }, { new: true })
+                    .then(() => {
+
+                    })
+                    .catch(err => res.status(400).json('Error: ' + err))
+            })
+            res.json('Movies added!')
+        })
+        .catch(err => res.status(400).json('Error: ' + err))
+}
+
+//get and add the genres to the movies
+let getMovieOverview = (movies, genreArr) => {
+    movies.forEach(mov => {
+        let query = queryString.stringify({ query: mov.name })
+
+        axios.get(`https://api.themoviedb.org/3/search/movie?api_key=bbfc7ad273a93a77ce94bcc5df095f3c&language=en-US&${query}&page=1&include_adult=false`)
+            .then(res => {
+                if (res.data.results[0] != undefined) {
+
+                    let genres = []
+
+                    res.data.results[0].genre_ids.forEach(id => {
+                        genreArr.forEach(gen => {
+                            if (gen.id === id) {
+                                genres.push(gen.name)
+                            }
+                        })
+                    })
+                    mov.overview = res.data.results[0].overview
+                    mov.genres = genres
+
+                    console.log(mov)
+                }
+            })
+            .catch(err => console.error(err))
+    })
+}
+
+
+
+let addDataToDB = (data, res) => {
+    //the theater info will always be at the end of the array 
+    let theaterInfo = data.slice(-1)
+    let movieData = data.slice(0, -1)
+
+    const newTheater = {
+        name: theaterInfo[0].theaterName,
+        address: theaterInfo[0].address
+    }
+    //check if the theater already exsists in the Theater collection 
+    Theater.countDocuments({ name: newTheater.name }, (err, test) => {
+        //add the new theater if it does not exsist
+        if (test === 0) {
+            Theater.create(newTheater)
+                .then(dbTheater => {
+                    addMovies(movieData, { _id: dbTheater._id }, res)
+                })
+                .catch(err => res.status(400).json('Error: ' + err))
+        }
+        else {
+            addMovies(movieData, { name: newTheater.name }, res)
+        }
+    })
+}
+/*=====  End of Helper Functions  ======*/
+
+
+
 /*=============================================
-=            Demo nightmare call             =
+=            Routes            =
 =============================================*/
-// getMovieInfo(theaters, dates)
+//scrape route to get moive theater and associated movies 
+router.route('/scrape').get((req, res) => {
+    //searches each theater and then the provided dates
+    // theaters.forEach(theater => {
+    //     // getMovieInfo(theater, dates)
+    //     dates.forEach(date => {
+    //         getMovieInfo(theater, date)
+    //     })
+    // })
+    addDataToDB(test, res)
 
-//write a function that searches each theater and then the provided dates
-// theaters.forEach(theater => {
-//     // getMovieInfo(theater, dates)
-//     dates.forEach(date => {
-//         getMovieInfo(theater, date)
-//     })
-
-// })
-
+})
 //add a theater to the db
 router.route('/add_theater').post((req, res) => {
-    const newTheater = { name: req.body.name }
+    const newTheater = {
+        name: req.body.name,
+        address: req.body.address
+    }
 
     Theater.create(newTheater)
         .then(dbMovie => {
@@ -124,7 +239,8 @@ router.route('/add_movie/:id').post((req, res) => {
         name: req.body.name,
         date: req.body.date,
         times: req.body.times,
-        links: req.body.links
+        links: req.body.links,
+        poster: req.body.poster
     }
 
     Movie.create(newMovie)
@@ -136,6 +252,256 @@ router.route('/add_movie/:id').post((req, res) => {
             res.status(400).json('Error: ' + err)
         })
 })
+/*=====  End of Routes  ======*/
 
 // Export routes for server.js to use.
 module.exports = router;
+
+
+
+/*=============================================
+=            Todays focus            =
+=============================================*/
+/*
+- Load test data into db
+- Need to make a collection containing a list of movies currently in theaters and associated genres
+    - perhaps when creating movie entires for the theaters just add the movie name to the TBN collecition (only adding if it does not already exsist)
+- Make a route to add generes to the movie? (or just add fake data)
+- Make a route to get all movies by genere
+    -this will be stored locally so we can randomly go through movies if a user does not want to see it
+- user will also enter date, so after randmly selecting a movie, filter results by date
+
+
+*/
+/*=====  End of Todays focus  ======*/
+
+
+let test = [{
+    name: 'Princess Mononoke – Studio Ghibli Fest 2019',
+    times: ['12:55p'],
+    date: '2019-11-17',
+    poster:
+        'https://images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/MasterRepository/fandango/217390/princess%20mononoke.jpg',
+    links:
+        ['https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=264129915&tid=aaiya&sdate=2019-11-17+12:55&mid=217390&from=mov_det_showtimes']
+},
+{
+    name: 'The Bolshoi Ballet: Le Corsaire',
+    times: ['12:55p'],
+    date: '2019-11-17',
+    poster:
+        'https://images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/MasterRepository/fandango/218719/1176_BolshoiLeCorsaire_250x375.jpg',
+    links:
+        ['https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=274673460&tid=aaiya&sdate=2019-11-17+12:55&mid=218719&from=mov_det_showtimes']
+},
+{
+    name: 'Charlie\'s Angels',
+    times: ['11:00a', '1:50p', '4:45p', '7:40p'],
+    date: '2019-11-17',
+    poster:
+        'https://images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/MasterRepository/fandango/219167/charlies-angels-CA_OnLine_1SHT_.jpg',
+    links:
+        ['https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=292293894&tid=aaiya&sdate=2019-11-17+11:00&mid=219167&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=292293891&tid=aaiya&sdate=2019-11-17+13:50&mid=219167&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=292293892&tid=aaiya&sdate=2019-11-17+16:45&mid=219167&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=292293893&tid=aaiya&sdate=2019-11-17+19:40&mid=219167&from=mov_det_showtimes']
+},
+{
+    name: 'Somewhere Winter',
+    times: ['11:05a', '1:35p', '4:35p', '8:05p'],
+    date: '2019-11-17',
+    poster:
+        'https://images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/MasterRepository/fandango/221296/SomewhereWinter_WebFriendlyPoster.jpg',
+    links:
+        ['https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046163&tid=aaiya&sdate=2019-11-17+11:05&mid=221296&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046227&tid=aaiya&sdate=2019-11-17+13:35&mid=221296&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046228&tid=aaiya&sdate=2019-11-17+16:35&mid=221296&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046164&tid=aaiya&sdate=2019-11-17+20:05&mid=221296&from=mov_det_showtimes']
+},
+{
+    name: 'The Good Liar',
+    times: ['11:20a', '2:05p', '4:50p', '7:45p'],
+    date: '2019-11-17',
+    poster:
+        'https://images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/MasterRepository/fandango/219273/TheGoodLiar2019.jpg',
+    links:
+        ['https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=300321153&tid=aaiya&sdate=2019-11-17+11:20&mid=219273&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=300321154&tid=aaiya&sdate=2019-11-17+14:05&mid=219273&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=300321155&tid=aaiya&sdate=2019-11-17+16:50&mid=219273&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=300321156&tid=aaiya&sdate=2019-11-17+19:45&mid=219273&from=mov_det_showtimes']
+},
+{
+    name: 'Better Days',
+    times: ['10:35a', '2:00p', '5:00p', '7:35p'],
+    date: '2019-11-17',
+    poster:
+        'https://images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/MasterRepository/fandango/219190/BetterDays-Poster-1382x2048.jpg',
+    links:
+        ['https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046229&tid=aaiya&sdate=2019-11-17+10:35&mid=219190&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046165&tid=aaiya&sdate=2019-11-17+14:00&mid=219190&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046166&tid=aaiya&sdate=2019-11-17+17:00&mid=219190&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046230&tid=aaiya&sdate=2019-11-17+19:35&mid=219190&from=mov_det_showtimes']
+},
+{
+    name: 'Doctor Sleep',
+    times: ['4:00p', '7:30p'],
+    date: '2019-11-17',
+    poster:
+        'https://images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/MasterRepository/fandango/219234/DRSLP_VERT_MAIN_DOM_2764x4096_master.jpg',
+    links:
+        ['https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=297002950&tid=aaiya&sdate=2019-11-17+16:00&mid=219234&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=297002949&tid=aaiya&sdate=2019-11-17+19:30&mid=219234&from=mov_det_showtimes']
+},
+{
+    name: 'Jojo Rabbit',
+    times: ['10:45a', '1:25p', '4:55p', '7:10p'],
+    date: '2019-11-17',
+    poster:
+        'https://images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/MasterRepository/fandango/219662/JOJO_DIGITAL_CAST_Dots_1334x2000_Poster_FIN.jpg',
+    links:
+        ['https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046191&tid=aaiya&sdate=2019-11-17+10:45&mid=219662&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046192&tid=aaiya&sdate=2019-11-17+13:25&mid=219662&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046173&tid=aaiya&sdate=2019-11-17+16:55&mid=219662&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046193&tid=aaiya&sdate=2019-11-17+19:10&mid=219662&from=mov_det_showtimes']
+},
+{
+    name: 'Last Christmas',
+    times: ['10:55a', '2:15p', '4:40p', '8:00p'],
+    date: '2019-11-17',
+    poster:
+        'https://images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/MasterRepository/fandango/219795/LastChristmas2019.jpg',
+    links:
+        ['https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046210&tid=aaiya&sdate=2019-11-17+10:55&mid=219795&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301090689&tid=aaiya&sdate=2019-11-17+14:15&mid=219795&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046211&tid=aaiya&sdate=2019-11-17+16:40&mid=219795&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046168&tid=aaiya&sdate=2019-11-17+20:00&mid=219795&from=mov_det_showtimes']
+},
+{
+    name: 'Midway',
+    times: ['10:50a', '3:20p', '7:00p'],
+    date: '2019-11-17',
+    poster:
+        'https://images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/MasterRepository/fandango/219391/midway-final-poster.jpg',
+    links:
+        ['https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301090690&tid=aaiya&sdate=2019-11-17+10:50&mid=219391&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046189&tid=aaiya&sdate=2019-11-17+15:20&mid=219391&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046190&tid=aaiya&sdate=2019-11-17+19:00&mid=219391&from=mov_det_showtimes']
+},
+{
+    name: 'Parasite',
+    times: ['10:40a', '1:45p', '4:05p', '7:50p'],
+    date: '2019-11-17',
+    poster:
+        'https://images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/MasterRepository/fandango/219062/Parasite2019.jpg',
+    links:
+        ['https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046170&tid=aaiya&sdate=2019-11-17+10:40&mid=219062&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046171&tid=aaiya&sdate=2019-11-17+13:45&mid=219062&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046194&tid=aaiya&sdate=2019-11-17+16:05&mid=219062&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046172&tid=aaiya&sdate=2019-11-17+19:50&mid=219062&from=mov_det_showtimes']
+},
+{
+    name: 'Maleficent: Mistress of Evil',
+    times: ['1:40p', '5:05p', '7:25p'],
+    date: '2019-11-17',
+    poster:
+        'https://images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/MasterRepository/fandango/218843/Maleficent25d48787443c8d.jpg',
+    links:
+        ['https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046215&tid=aaiya&sdate=2019-11-17+13:40&mid=218843&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046169&tid=aaiya&sdate=2019-11-17+17:05&mid=218843&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046216&tid=aaiya&sdate=2019-11-17+19:25&mid=218843&from=mov_det_showtimes']
+},
+{
+    name: 'Joker',
+    times: ['5:10p', '8:05p'],
+    date: '2019-11-17',
+    poster:
+        'https://images.fandango.com/ImageRenderer/200/0/redesign/static/img/default_poster.png/0/images/MasterRepository/fandango/214548/JOKER_VERT_MAIN_DOM_2764x4096_master.jpg',
+    links:
+        ['https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046236&tid=aaiya&sdate=2019-11-17+17:10&mid=214548&from=mov_det_showtimes',
+            'https://tickets.fandango.com/Transaction/Ticketing/ticketboxoffice.aspx?row_count=301046237&tid=aaiya&sdate=2019-11-17+20:05&mid=214548&from=mov_det_showtimes']
+},
+{
+    theaterName: 'AMC PACIFIC PLACE 11',
+    address: '600 Pine S., Seattle, WA 98101 '
+}]
+
+let genres = [
+    {
+        "id": 28,
+        "name": "Action"
+    },
+    {
+        "id": 12,
+        "name": "Adventure"
+    },
+    {
+        "id": 16,
+        "name": "Animation"
+    },
+    {
+        "id": 35,
+        "name": "Comedy"
+    },
+    {
+        "id": 80,
+        "name": "Crime"
+    },
+    {
+        "id": 99,
+        "name": "Documentary"
+    },
+    {
+        "id": 18,
+        "name": "Drama"
+    },
+    {
+        "id": 10751,
+        "name": "Family"
+    },
+    {
+        "id": 14,
+        "name": "Fantasy"
+    },
+    {
+        "id": 36,
+        "name": "History"
+    },
+    {
+        "id": 27,
+        "name": "Horror"
+    },
+    {
+        "id": 10402,
+        "name": "Music"
+    },
+    {
+        "id": 9648,
+        "name": "Mystery"
+    },
+    {
+        "id": 10749,
+        "name": "Romance"
+    },
+    {
+        "id": 878,
+        "name": "Science Fiction"
+    },
+    {
+        "id": 10770,
+        "name": "TV Movie"
+    },
+    {
+        "id": 53,
+        "name": "Thriller"
+    },
+    {
+        "id": 10752,
+        "name": "War"
+    },
+    {
+        "id": 37,
+        "name": "Western"
+    }
+]
+
+getMovieOverview(test.slice(0, -1), genres)
