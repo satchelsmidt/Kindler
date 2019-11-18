@@ -12,6 +12,6 @@ web-report/
 .env
 /.env
 *.env
-backend/.env
+./backend/.env
 # macOS
 .DS_Store
