@@ -7,7 +7,10 @@ const movieSchema = new Schema({
     date: { type: String, required: true },
     times: { type: Array, required: true },
     links: { type: Array, required: true },
-    poster: { type: String, required: true }
+    poster: { type: String, required: true },
+    overview: { type: String },
+    rating: { type: String },
+    genres: { type: Array }
 })
 
 let Movie = mongoose.model('Movie', movieSchema)
