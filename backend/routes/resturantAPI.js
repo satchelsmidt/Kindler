@@ -1,0 +1,624 @@
+const router = require('express').Router()
+const cheerio = require('cheerio');
+const axios = require('axios')
+const queryString = require('query-string');
+//imports .env variables
+require('dotenv').config()
+
+
+
+/*=============================================
+=            Helper functions             =
+=============================================*/
+let config = {
+    headers: {
+        "user-key": process.env.FOOD_KEY
+    }
+}
+
+let cuisines = [
+    {
+        "cuisine": {
+            "cuisine_id": 1035,
+            "cuisine_name": "Afghan"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 152,
+            "cuisine_name": "African"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 1,
+            "cuisine_name": "American"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 151,
+            "cuisine_name": "Argentine"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 175,
+            "cuisine_name": "Armenian"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 3,
+            "cuisine_name": "Asian"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 131,
+            "cuisine_name": "Australian"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 193,
+            "cuisine_name": "BBQ"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 955,
+            "cuisine_name": "Bagels"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 5,
+            "cuisine_name": "Bakery"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 227,
+            "cuisine_name": "Bar Food"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 132,
+            "cuisine_name": "Belgian"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 270,
+            "cuisine_name": "Beverages"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 159,
+            "cuisine_name": "Brazilian"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 182,
+            "cuisine_name": "Breakfast"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 133,
+            "cuisine_name": "British"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 168,
+            "cuisine_name": "Burger"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 30,
+            "cuisine_name": "Cafe"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 491,
+            "cuisine_name": "Cajun"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 111,
+            "cuisine_name": "Cambodian"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 121,
+            "cuisine_name": "Cantonese"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 158,
+            "cuisine_name": "Caribbean"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 25,
+            "cuisine_name": "Chinese"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 161,
+            "cuisine_name": "Coffee and Tea"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 928,
+            "cuisine_name": "Creole"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 153,
+            "cuisine_name": "Cuban"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 192,
+            "cuisine_name": "Deli"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 100,
+            "cuisine_name": "Desserts"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 958,
+            "cuisine_name": "Dominican"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 959,
+            "cuisine_name": "Donuts"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 268,
+            "cuisine_name": "Drinks Only"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 651,
+            "cuisine_name": "Eastern European"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 149,
+            "cuisine_name": "Ethiopian"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 38,
+            "cuisine_name": "European"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 40,
+            "cuisine_name": "Fast Food"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 112,
+            "cuisine_name": "Filipino"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 45,
+            "cuisine_name": "French"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 501,
+            "cuisine_name": "Frozen Yogurt"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 274,
+            "cuisine_name": "Fusion"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 134,
+            "cuisine_name": "German"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 156,
+            "cuisine_name": "Greek"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 181,
+            "cuisine_name": "Grill"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 521,
+            "cuisine_name": "Hawaiian"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 148,
+            "cuisine_name": "Indian"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 114,
+            "cuisine_name": "Indonesian"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 140,
+            "cuisine_name": "Iranian"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 135,
+            "cuisine_name": "Irish"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 55,
+            "cuisine_name": "Italian"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 207,
+            "cuisine_name": "Jamaican"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 60,
+            "cuisine_name": "Japanese"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 67,
+            "cuisine_name": "Korean"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 901,
+            "cuisine_name": "Laotian"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 136,
+            "cuisine_name": "Latin American"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 66,
+            "cuisine_name": "Lebanese"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 69,
+            "cuisine_name": "Malaysian"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 70,
+            "cuisine_name": "Mediterranean"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 73,
+            "cuisine_name": "Mexican"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 137,
+            "cuisine_name": "Middle Eastern"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 74,
+            "cuisine_name": "Mongolian"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 147,
+            "cuisine_name": "Moroccan"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 117,
+            "cuisine_name": "Nepalese"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 996,
+            "cuisine_name": "New American"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 321,
+            "cuisine_name": "Pacific"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 963,
+            "cuisine_name": "Pacific Northwest"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 139,
+            "cuisine_name": "Pakistani"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 183,
+            "cuisine_name": "Patisserie"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 162,
+            "cuisine_name": "Peruvian"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 87,
+            "cuisine_name": "Portuguese"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 84,
+            "cuisine_name": "Russian"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 601,
+            "cuisine_name": "Salvadorean"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 691,
+            "cuisine_name": "Scandinavian"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 210,
+            "cuisine_name": "Scottish"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 83,
+            "cuisine_name": "Seafood"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 128,
+            "cuisine_name": "Sichuan"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 461,
+            "cuisine_name": "Soul Food"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 267,
+            "cuisine_name": "South African"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 471,
+            "cuisine_name": "Southern"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 966,
+            "cuisine_name": "Southwestern"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 89,
+            "cuisine_name": "Spanish"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 177,
+            "cuisine_name": "Sushi"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 190,
+            "cuisine_name": "Taiwanese"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 964,
+            "cuisine_name": "Teriyaki"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 150,
+            "cuisine_name": "Tex-Mex"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 95,
+            "cuisine_name": "Thai"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 93,
+            "cuisine_name": "Tibetan"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 142,
+            "cuisine_name": "Turkish"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 308,
+            "cuisine_name": "Vegetarian"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 641,
+            "cuisine_name": "Venezuelan"
+        }
+    },
+    {
+        "cuisine": {
+            "cuisine_id": 99,
+            "cuisine_name": "Vietnamese"
+        }
+    }
+]
+
+let test1 = {
+    "cuisine": "Chinese",
+    "sortBy": "rating",
+    "location": "47.652071,-122.413393"
+}
+
+/*=====  End of Helper functions   ======*/
+
+
+/*=============================================
+=            Routes            =
+=============================================*/
+//route that gets 5 resturants 
+/* 
+-user will provide the cuisine (get id from array above)
+-should be able to check if the user has selected that resturant already 
+    -try to add another entry if so 
+-if none are choose, give the user the option to reselect 
+    -this should increment the offset by 5 and then re-search (the axios call should probably be its own function)
+-well what about user location 
+    -give the user the option to filter by rating, cost, or location
+
+TODO: FOCUS ON making an object with relevant information 
+*/
+
+
+router.route('/get_resturants').get((req, res) => {
+    const { cuisine, sortBy, location } = req.body
+
+    //convert the cuisine to the id
+    for (let i = 0; i < cuisines.length; i++) {
+        // console.log('hello')
+        if (cuisines[i].cuisine.cuisine_name == cuisine) {
+            cuisineID = cuisines[i].cuisine.cuisine_id
+            break
+        }
+    }
+
+
+    axios.get(`https://developers.zomato.com/api/v2.1/search?entity_id=279&entity_type=city&count=5&cuisines=${cuisineID}&sort=${sortBy}`, config)
+        .then(result => {
+
+            result.data.restaurants.forEach(r => {
+                let newresturant = {
+                    name: r.name,
+                    location: r.location.address,
+                    times: r.timings
+
+                }
+            });
+
+
+            res.json(result.data.restaurants[0])
+        })
+        .catch(err => {
+            res.status(400).json('Error: ' + err)
+        })
+})
+
+
+
+/*=====  End of Routes  ======*/
+
+// Export routes for server.js to use.
+module.exports = router;
+
+
+
+// https://developers.zomato.com/api/v2.1/search?entity_id=279&entity_type=city&count=5&cuisines=55&sort=rating
