@@ -7,28 +7,39 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  Button,
   View,
+  AsyncStorage
 } from 'react-native';
+import 'react-navigation';
 
 import { MonoText } from '../components/StyledText';
+import SignOutButton from '../navigation/SignOut';
 
-export default function HomeScreen() {
+
+
+export default function HomeScreen(props) {
+  
+  _signOutAsync = async () => {
+    try {
+        console.log("reached this stage")
+        await AsyncStorage.clear();
+        props.navigation.navigate('Auth')
+    } catch (err) {
+        console.log(err)
+    }
+}
+
   return (
     <View style={styles.container}>
-      <ScrollView/>
+      
+      <ScrollView>
 
-      <View style={styles.tabBarInfoContainer}>
-        <Text style={styles.tabBarInfoText}>
-          This is a tab bar. You can edit it in:
-        </Text>
-
-        <View
-          style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-          <MonoText style={styles.codeHighlightText}>
-            navigation/MainTabNavigator.js
-          </MonoText>
-        </View>
+      <View style={styles.contentContainer}>
+        <SignOutButton navigation={this._signOutAsync}/>
       </View>
+
+      </ScrollView>
     </View>
   );
 }
