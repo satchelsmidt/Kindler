@@ -19,25 +19,25 @@ import SignOutButton from '../navigation/SignOut';
 
 
 export default function HomeScreen(props) {
-  
+
   _signOutAsync = async () => {
     try {
-        console.log("reached this stage")
-        await AsyncStorage.clear();
-        props.navigation.navigate('Auth')
+      console.log("reached this stage")
+      await AsyncStorage.clear();
+      props.navigation.navigate('Auth')
     } catch (err) {
-        console.log(err)
+      console.log(err)
     }
-}
+  }
 
   return (
     <View style={styles.container}>
-      
+
       <ScrollView>
 
-      <View style={styles.contentContainer}>
-        <SignOutButton navigation={this._signOutAsync}/>
-      </View>
+        <View style={styles.contentContainer}>
+          <SignOutButton navigation={this._signOutAsync} />
+        </View>
 
       </ScrollView>
     </View>
