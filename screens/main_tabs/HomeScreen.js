@@ -1,34 +1,17 @@
 import * as WebBrowser from 'expo-web-browser';
 import React from 'react';
 import {
-  Image,
   Platform,
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
-  Button,
   View,
-  AsyncStorage
 } from 'react-native';
 import 'react-navigation';
 
-import { MonoText } from '../components/StyledText';
-import SignOutButton from '../navigation/SignOut';
-
-
+// import { MonoText } from '../../components/StyledText';
 
 export default function HomeScreen(props) {
-  
-  _signOutAsync = async () => {
-    try {
-        console.log("reached this stage")
-        await AsyncStorage.clear();
-        props.navigation.navigate('Auth')
-    } catch (err) {
-        console.log(err)
-    }
-}
 
   return (
     <View style={styles.container}>
@@ -36,7 +19,7 @@ export default function HomeScreen(props) {
       <ScrollView>
 
       <View style={styles.contentContainer}>
-        <SignOutButton navigation={this._signOutAsync}/>
+        <Text>Hey, welcome to this app about dating or something</Text>
       </View>
 
       </ScrollView>
@@ -44,9 +27,9 @@ export default function HomeScreen(props) {
   );
 }
 
-HomeScreen.navigationOptions = {
-  header: null,
-};
+// HomeScreen.navigationOptions = {
+//   header: null,
+// };
 
 function DevelopmentModeNotice() {
   if (__DEV__) {
