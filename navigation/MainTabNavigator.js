@@ -3,9 +3,15 @@ import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
-import CreateScreen from '../screens/LinksScreen';
-import SettingsScreen from '../screens/SettingsScreen';
+import HomeScreen from '../screens/main_tabs/HomeScreen';
+// import CreateScreen from '../screens/main_tabs/LinksScreen';
+import SelectDateScreen from '../screens/create_flow/SelectDate'
+import InputFoodParams from '../screens/create_flow/InputFood'
+import InputMovieParams from '../screens/create_flow/InputMovie'
+import InputEventParams from '../screens/create_flow/InputEvent'
+import SelectFinalDate from '../screens/create_flow/SelectFinal'
+
+import ProfileScreen from '../screens/main_tabs/SettingsScreen';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -26,7 +32,7 @@ HomeStack.navigationOptions = {
       focused={focused}
       name={
         Platform.OS === 'ios'
-          ? `ios-home${focused ? '' : '-outline'}`
+          ? 'ios-home'
           : 'md-home'
       }
     />
@@ -35,9 +41,22 @@ HomeStack.navigationOptions = {
 
 HomeStack.path = '';
 
+// const CreateStack = createStackNavigator(
+//   {
+//     Create: CreateScreen,
+//   },
+//   config
+// );
+
 const CreateStack = createStackNavigator(
   {
-    Create: CreateScreen,
+    //default screen given to us on this page, can modify or maybe remove entirely
+    // Create: CreateScreen,
+    Date: SelectDateScreen,
+    Food: InputFoodParams,
+    Movie: InputMovieParams,
+    Event: InputEventParams,
+    Final: SelectFinalDate
   },
   config
 );
@@ -53,7 +72,7 @@ CreateStack.path = '';
 
 const ProfileStack = createStackNavigator(
   {
-    Profile: SettingsScreen,
+    Profile: ProfileScreen,
   },
   config
 );

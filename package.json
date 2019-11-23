@@ -27,6 +27,7 @@
     "expo-web-browser": "^7.0.0",
     "express": "^4.17.1",
     "mongoose": "^5.7.12",
+    "native-base": "^2.13.8",
     "nightmare": "^3.0.2",
     "query-string": "^6.9.0",
     "react": "16.8.3",

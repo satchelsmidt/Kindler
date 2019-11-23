@@ -12,7 +12,7 @@ function SignOutButton(props){
     console.log('SIGN OUT PROPS: ', props)
         return(
             <View>
-                <Button title="Sign out!" onPress= {props.navigation}/>
+                <Button title="Sign out!" onPress={props.navigation}/>
             </View>
         )
 
