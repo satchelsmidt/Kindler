@@ -5,7 +5,7 @@ import {
     Text,
     Button
 } from 'react-native';
-// import CuisinePicker from '../../components/FoodSelection';
+import EventPicker from '../../components/EventSelection';
 import 'react-navigation';
 // import { Button } from 'native-base';
 
@@ -18,7 +18,7 @@ export default function FoodSelection(props){
     
           <View>
           <Text>THIS IS THE EVENT SELECTION SCREEN</Text>
-            {/* <CuisinePicker /> */}
+            <EventPicker />
             <Button
                 title="Next"
                 onPress={()=>props.navigation.navigate('Final')}
