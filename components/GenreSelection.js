@@ -3,17 +3,17 @@ import { Container, Header, Content, Picker, Form } from "native-base";
 import genres from '../backend/data/genres.json'
 
 export default class PickerExample extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selected: "key1"
-    };
-  }
-  onValueChange(value: string) {
-    this.setState({
-      selected: value
-    });
-  }
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     selected: "key1"
+  //   };
+  // }
+  // onValueChange(value: string) {
+  //   this.setState({
+  //     selected: value
+  //   });
+  // }
   render() {
     return (
       <Container>
@@ -23,14 +23,13 @@ export default class PickerExample extends Component {
             <Picker
               note
               mode="dropdown"
-              style={{ width: 120 }}
-              selectedValue={this.state.selected}
-              onValueChange={this.onValueChange.bind(this)}
+              style={{ width: 300 }}
+              placeholder="Select a Genre!"
+              selectedValue={this.props.genre}
+              onValueChange={(value)=>this.props.handleInput(value, 'genre')}
             >
             {genres.map(e=>{
-                console.log('data!!!', e)
-
-                return <Picker.Item label={e.name} value={e.id} />
+                return <Picker.Item label={e.name} value={e.name} />
                 })}
             </Picker>
           </Form>
