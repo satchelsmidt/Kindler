@@ -3,7 +3,8 @@ import {
     ScrollView,
     View,
     Text,
-    Button
+    Button,
+    AsyncStorage
 } from 'react-native';
 import CuisinePicker from '../../components/FoodSelection';
 import SortBy from '../../components/FilterSelection'
@@ -19,6 +20,15 @@ export default class FoodSelection extends Component {
 
     }
 
+    _storeData = async(data)=>{
+        try{
+            await AsyncStorage.setItem('restaurantData', JSON.stringify(data))
+            alert("saved")
+        } catch (error) {
+            console.log("you have failed")
+        }
+    }
+
 
     SearchFoods = () => {        
 
@@ -31,7 +41,8 @@ export default class FoodSelection extends Component {
             }
         }).then(response => {
                 this.props.navigation.navigate('Movie')
-                console.log("response: ", response)
+                this._storeData(response)
+                // console.log("response: ", response)
                 // this.setState("response" = response)
                 //TODO: Store response in state, offset API call by 5 for each progressive api call
             })

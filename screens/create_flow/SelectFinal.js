@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image } from 'react-native';
+import { Image, Button, AsyncStorage } from 'react-native';
 import { Container, Header, View, DeckSwiper, Card, CardItem, Thumbnail, Text, Left, Body, Icon } from 'native-base';
 
 const cards = [
@@ -20,11 +20,31 @@ const cards = [
   }
 ];
 export default class DeckSwiperExample extends Component {
+
+  _retrieveData = async(key)=>{
+    try{
+      console.log('hey you got to the first step')
+      const value = await AsyncStorage.getItem(key);
+      console.log(value)
+      // if(value !== null){
+      //   console.log("IT WORKED: ", value)
+      // }
+    } catch (error){
+      console.log(error)
+    }
+  }
+
   render() {
     return (
       <Container>
         <Header />
         <View>
+
+          <Button
+            title="Press Me to get data"
+            onPress={()=>this._retrieveData('restaurantData')}
+          />
+
           <DeckSwiper
             dataSource={cards}
             renderItem={item =>

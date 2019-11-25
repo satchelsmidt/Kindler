@@ -2,17 +2,6 @@ import React, { Component } from "react";
 import { Container, Header, Content, Picker, Form } from "native-base";
 
 export default class SortBy extends Component {
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {
-    //         selected: "key1"
-    //     };
-    // }
-    // onValueChange(value: string) {
-    //     this.setState({
-    //         selected: value
-    //     });
-    // }
     render() {
         return (
             <Container>
