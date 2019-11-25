@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Image } from 'react-native';
 import { Container, Header, View, DeckSwiper, Card, CardItem, Thumbnail, Text, Left, Body, Icon } from 'native-base';
+
 const cards = [
   {
     text: 'Card One',

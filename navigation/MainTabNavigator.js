@@ -50,8 +50,6 @@ HomeStack.path = '';
 
 const CreateStack = createStackNavigator(
   {
-    //default screen given to us on this page, can modify or maybe remove entirely
-    // Create: CreateScreen,
     Date: SelectDateScreen,
     Food: InputFoodParams,
     Movie: InputMovieParams,
