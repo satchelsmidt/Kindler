@@ -3,7 +3,8 @@ import {
   ScrollView,
   View,
   Text,
-  Button
+  Button,
+  AsyncStorage
 } from 'react-native';
 import GenrePicker from '../../components/GenreSelection';
 import 'react-navigation';
@@ -15,9 +16,18 @@ export default class FoodSelection extends Component {
     genre: ''
   }
 
+  _storeData = async(data)=>{
+    try{
+        await AsyncStorage.setItem('movieData', JSON.stringify(data))
+        alert("saved")
+    } catch (error) {
+        console.log(error)
+    }
+}
+
   SearchMovies = () => {
 
-    console.log("LOG SOMETHING FOR GODS SAKE: ", this.props.navigation)
+    // console.log("LOG SOMETHING FOR GODS SAKE: ", this.props.navigation)
     // this.props.navigation.navigate('Event')
 
 
@@ -25,11 +35,12 @@ export default class FoodSelection extends Component {
       .then(response => {
         this.props.navigation.navigate('Event')
         console.log('response: ', response)
+        this._storeData(response)
       })
   }
 
   handleInput = (value, name) => {
-    console.log('value:', value)
+    // console.log('value:', value)
     this.setState({
       // [name]: value.slice(1, -1)
       [name]: value
