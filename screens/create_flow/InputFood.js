@@ -21,20 +21,20 @@ export default class FoodSelection extends Component {
 
     // let currentComponent = this
 
-    _clearData = async(data)=>{
-        try{
-            await AsyncStorage.multiRemove(data)
-            alert('removed that shit')
-            console.log('this is the data we apparently removed: ', data)
-        }catch(error){
-            console.log(error)
-        }
-    }
+    // _clearData = async(data)=>{
+    //     try{
+    //         await AsyncStorage.multiRemove(data)
+    //         alert('removed that shit')
+    //         console.log('this is the data we apparently removed: ', data)
+    //     }catch(error){
+    //         console.log(error)
+    //     }
+    // }
 
-    _storeData = async(data)=>{
-        try{
+    _storeData = async (data) => {
+        try {
             await AsyncStorage.setItem('restaurantData', JSON.stringify(data))
-            // console.log("THE DATA WE SAVED: ", JSON.stringify(data))
+            console.log("THE DATA WE SAVED: ", JSON.stringify(data))
             alert("saved")
         } catch (error) {
             console.log(error)
@@ -42,7 +42,8 @@ export default class FoodSelection extends Component {
     }
 
 
-    SearchFoods = () => {        
+    SearchFoods = () => {
+
 
         axios.get('https://obscure-springs-29928.herokuapp.com/resturants/get_resturants', {
             parameters: {
@@ -57,27 +58,43 @@ export default class FoodSelection extends Component {
             this.props.navigation.navigate('Movie')
             this._storeData(response)
         })
-               
-                // console.log("response: ", response)
-                // this.setState("response" = response)
-                //TODO: Store response in state, offset API call by 5 for each progressive api call
-            // })
+
+        // console.log("response: ", response)
+        // this.setState("response" = response)
+        //TODO: Store response in state, offset API call by 5 for each progressive api call
+        // })
     }
 
     handleInput = (value, name) => {
+        this.clearInitial()
+
         console.log('VALUE:', value)
         this.setState({
             [name]: value
+            
+        },
+        ()=>console.log('cuisine after set:', this.state.cuisine))
+        // console.log('cuisine after set:', this.state.cuisine)
+    }
+
+    clearInitial = () => {
+        this.setState({
+            cuisine: '',
+            sortby: ''
         })
-        console.log('cuisine after set:', this.state.cuisine)
     }
 
     render() {
 
-        
-    // if (this.state.cuisine.length !== 0) {
-    //     this._clearData(['dateData', 'restaurantData', 'movieData']) //return false or a <Loader/> when you don't have anything in your message[]
-    //   }
+        //         if(this.state.cuisine.length !==0){
+        //             this.clearInitial()
+        // return false
+        //         }
+
+
+        // if (this.state.cuisine.length !== 0) {
+        //     this._clearData(['dateData', 'restaurantData', 'movieData']) //return false or a <Loader/> when you don't have anything in your message[]
+        //   }
         return (
             <View>
 
@@ -85,8 +102,8 @@ export default class FoodSelection extends Component {
 
                     <View>
                         <Text>THIS IS THE FOOD SELECTION SCREEN</Text>
-                        <CuisinePicker cuisine={this.state.cuisine} handleInput={this.handleInput}/>
-                        <SortBy sortby={this.state.sortby} handleInput={this.handleInput}/>
+                        <CuisinePicker cuisine={this.state.cuisine} handleInput={this.handleInput} />
+                        <SortBy sortby={this.state.sortby} handleInput={this.handleInput} />
                         <Button
                             title="Next"
                             onPress={this.SearchFoods}

@@ -10,6 +10,16 @@ export default class GoogleSignIn extends Component {
     header: null
 }
 
+  _clearData = async (data) => {
+    try {
+      await AsyncStorage.multiRemove(data)
+      alert('removed that shit')
+      console.log('this is the data we apparently removed: ', data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   // _storeData = async (data) =>{
   //   try{
   //     await AsyncStorage.setItem(data)
@@ -73,8 +83,8 @@ export default class GoogleSignIn extends Component {
           <Text style={styles.headerText}>Welcome to Kindler</Text>
         </Header>
 
-        <Grid>
-          <Col style={{ backgroundColor: '#635DB7', height: 300 }}>
+        {/* <Grid> */}
+          {/* <Col style={{ backgroundColor: '#635DB7', height: 300 }}> */}
             <View>
               <Image
                 style={styles.container, { width: 250, height: 250 }}
@@ -83,7 +93,7 @@ export default class GoogleSignIn extends Component {
             </View>
           </Col>
           {/* <Col style={{ backgroundColor: '#00CE9F', height: 200 }}></Col> */}
-        </Grid>
+        {/* </Grid> */}
 
         <View style={styles.container}>
           <Button
@@ -109,5 +119,6 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 40
   }
+
 });
 
