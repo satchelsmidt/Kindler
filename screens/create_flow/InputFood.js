@@ -17,15 +17,27 @@ export default class FoodSelection extends Component {
     state = {
         cuisine: '',
         sortby: '',
+    }
 
+    // let currentComponent = this
+
+    _clearData = async(data)=>{
+        try{
+            await AsyncStorage.multiRemove(data)
+            alert('removed that shit')
+            console.log('this is the data we apparently removed: ', data)
+        }catch(error){
+            console.log(error)
+        }
     }
 
     _storeData = async(data)=>{
         try{
             await AsyncStorage.setItem('restaurantData', JSON.stringify(data))
+            // console.log("THE DATA WE SAVED: ", JSON.stringify(data))
             alert("saved")
         } catch (error) {
-            console.log("you have failed")
+            console.log(error)
         }
     }
 
@@ -40,12 +52,16 @@ export default class FoodSelection extends Component {
                 "offset": 0
             }
         }).then(response => {
-                this.props.navigation.navigate('Movie')
-                this._storeData(response)
+            console.log("STATE OF CUISINE (apparently): ", this.state.cuisine)
+            console.log('RESPONSE: ', response)
+            this.props.navigation.navigate('Movie')
+            this._storeData(response)
+        })
+               
                 // console.log("response: ", response)
                 // this.setState("response" = response)
                 //TODO: Store response in state, offset API call by 5 for each progressive api call
-            })
+            // })
     }
 
     handleInput = (value, name) => {
@@ -57,6 +73,11 @@ export default class FoodSelection extends Component {
     }
 
     render() {
+
+        
+    // if (this.state.cuisine.length !== 0) {
+    //     this._clearData(['dateData', 'restaurantData', 'movieData']) //return false or a <Loader/> when you don't have anything in your message[]
+    //   }
         return (
             <View>
 

@@ -4,8 +4,7 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/main_tabs/HomeScreen';
-// import CreateScreen from '../screens/main_tabs/LinksScreen';
-import SelectDateScreen from '../screens/create_flow/SelectDate'
+import InputDateScreen from '../screens/create_flow/InputDate'
 import InputFoodParams from '../screens/create_flow/InputFood'
 import InputMovieParams from '../screens/create_flow/InputMovie'
 import InputEventParams from '../screens/create_flow/InputEvent'
@@ -41,16 +40,9 @@ HomeStack.navigationOptions = {
 
 HomeStack.path = '';
 
-// const CreateStack = createStackNavigator(
-//   {
-//     Create: CreateScreen,
-//   },
-//   config
-// );
-
 const CreateStack = createStackNavigator(
   {
-    Date: SelectDateScreen,
+    Date: InputDateScreen,
     Food: InputFoodParams,
     Movie: InputMovieParams,
     Event: InputEventParams,
