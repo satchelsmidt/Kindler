@@ -1,4 +1,10 @@
-import React from 'react';
+import * as WebBrowser from 'expo-web-browser';
+import React, { Component } from 'react';
+import * as Font from 'expo-font';
+import { Ionicons } from '@expo/vector-icons';
+import { AppLoading } from 'expo';
+import axios from 'axios';
+import AppContainer from "../../components/DateList/DateListItems.component";
 import {
   Platform,
   ScrollView,
@@ -10,22 +16,47 @@ import 'react-navigation';
 
 // import { MonoText } from '../../components/StyledText';
 
-export default function HomeScreen(props) {
-
-  return (
-    // <View>
-      
-      <ScrollView>
-
-      <View>
-        <Text>Hey, welcome to this app about dating or something</Text>
-      </View>
-
-      </ScrollView>
-    // </View>
-  );
+export default class HomeScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isReady: false,
+      data: []
+    }
+  }
+  static navigationOptions = {
+    header: null
 }
 
+  async componentDidMount() {
+    await Font.loadAsync({
+      Roboto: require('../../node_modules/native-base/Fonts/Roboto.ttf'),
+      Roboto_medium: require('../../node_modules/native-base/Fonts/Roboto_medium.ttf'),
+      ...Ionicons.font,
+    });
+
+    axios.get(`https://obscure-springs-29928.herokuapp.com/date/all_dates/5dd625cd294dd35110a02b74`)
+      .then(result =>
+        // console.log(result.data[0].dates)
+        this.setState({ data: result.data[0].dates })
+
+      )
+      .catch(err => console.error(err))
+
+    this.setState({ isReady: true });
+  }
+
+  render() {
+
+    if (!this.state.isReady) {
+      return <AppLoading />;
+    }
+
+    return (
+      <AppContainer screenProps={{ data: this.state.data }} />
+    )
+  }
+}
 // HomeScreen.navigationOptions = {
 //   header: null,
 // };
