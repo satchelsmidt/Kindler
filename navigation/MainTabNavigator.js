@@ -14,17 +14,24 @@ import ProfileScreen from '../screens/main_tabs/SettingsScreen';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
-  default: {},
+  headerMode: 'none',
+  navigationOptions: {
+    headerVisible: false,
+  }
 });
 
 const HomeStack = createStackNavigator(
   {
     Home: HomeScreen,
   },
-  config
+  config,
+  //   {
+  //   headerMode: 'screen',  // should work here
+  // }
 );
 
 HomeStack.navigationOptions = {
+  header: null,
   tabBarLabel: 'Home',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
@@ -52,6 +59,7 @@ const CreateStack = createStackNavigator(
 );
 
 CreateStack.navigationOptions = {
+  header: null,
   tabBarLabel: 'Create',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-add' : 'md-add'} />
@@ -68,6 +76,7 @@ const ProfileStack = createStackNavigator(
 );
 
 ProfileStack.navigationOptions = {
+  header: null,
   tabBarLabel: 'Profile',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-person' : 'md-person'} />
@@ -80,6 +89,13 @@ const tabNavigator = createBottomTabNavigator({
   HomeStack,
   CreateStack,
   ProfileStack,
+}, {
+  headerMode: 'none',
+  navigationOptions: {
+    header: null,
+    headerVisible: false,
+    headershown: false,
+  }
 });
 
 tabNavigator.path = '';
