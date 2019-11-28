@@ -6,6 +6,9 @@ import { Container, Header } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 
 export default class GoogleSignIn extends Component {
+  static navigationOptions = {
+    header: null
+}
 
   // _storeData = async (data) =>{
   //   try{
@@ -32,17 +35,17 @@ export default class GoogleSignIn extends Component {
         iosClientId: '220715676294-o3v7hl5mj6l0rd4ubjvbfia9h02jb6hb.apps.googleusercontent.com',
         scopes: ['profile', 'email'],
       });
-      console.log('This is the result returned from google when logging in:', result)
+      // console.log('This is the result returned from google when logging in:', result)
       if (result.type === 'success') {
         Alert.alert(
           'Logged in!',
           `Hi ${result.user.name}!`,
         );
         // this._storeData('result', JSON.stringify(result))
-        
+
         // TODO: Store the googleId in localstorage using AsyncStorage
         // TODO: Make an API call that creates this user if they have not been created already
-        console.log('This is the same thing (google result) but JSON stringified: ', JSON.stringify(result.user))
+        // console.log('This is the same thing (google result) but JSON stringified: ', JSON.stringify(result.user))
         this.props.navigation.navigate('App')
         return result.accessToken;
       } else {
@@ -67,18 +70,18 @@ export default class GoogleSignIn extends Component {
 
       <Container>
         <Header>
-        <Text style={styles.headerText}>Welcome to Kindler</Text>
+          <Text style={styles.headerText}>Welcome to Kindler</Text>
         </Header>
 
         <Grid>
           <Col style={{ backgroundColor: '#635DB7', height: 300 }}>
             <View>
-            <Image
-            style={styles.container, {width: 250, height: 250}} 
-            source={require('../../assets/images/fire.jpg')} 
-            />
+              <Image
+                style={styles.container, { width: 250, height: 250 }}
+                source={require('../../assets/images/fire.jpg')}
+              />
             </View>
-            </Col>
+          </Col>
           {/* <Col style={{ backgroundColor: '#00CE9F', height: 200 }}></Col> */}
         </Grid>
 
@@ -103,8 +106,8 @@ const styles = StyleSheet.create({
     paddingTop: Constants.statusBarHeight,
     backgroundColor: '#ecf0f1',
   },
-  headerText:{
-fontSize: 40
+  headerText: {
+    fontSize: 40
   }
 });
 
