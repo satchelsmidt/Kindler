@@ -62,6 +62,13 @@ export default class DeckSwiperExample extends Component {
   //     image:'../../assets/images/robot-dev.png'
   //   })
   // }
+// TODO: Actually send the data here to the server
+  finalizeDate=()=>{
+    this.setState({ dateData: '' })
+      this.setState({ restaurantData: '' })
+      this.setState({ movieData: '' })
+      console.log('data sent to server')
+  }
 
   componentWillMount() {
     this._retrieveData(['dateData', 'restaurantData', 'movieData'])
@@ -93,7 +100,7 @@ export default class DeckSwiperExample extends Component {
                   <Card style={{ elevation: 3 }}>
                     <CardItem>
                       <Left>
-                        {/* <Thumbnail source={item.thumbnail} /> */}
+                        <Thumbnail source={{uri:item.thumbnail}}/>
                         <Body>
                           <Text>{item.name}</Text>
                           <Text note>NativeBase</Text>
@@ -104,9 +111,9 @@ export default class DeckSwiperExample extends Component {
                         </Body>
                       </Left>
                     </CardItem>
-                    {/* <CardItem cardBody> */}
-                    {/* <Image style={{ height: 30, width: 30, flex: 1 }} source={item.thumbnail} /> */}
-                    {/* </CardItem> */}
+                    <CardItem cardBody>
+                    <Image style={{ height: 30, width: 30, flex: 1 }} source={{uri:item.thumbnail}} />
+                    </CardItem>
                     <CardItem>
                       <Icon name="heart" style={{ color: '#ED4A6A' }} />
                       <Text>Phone: {item.phone}</Text>
@@ -151,6 +158,8 @@ export default class DeckSwiperExample extends Component {
               />
             </View>
           </Container>
+
+          <Button title="Submit Date" onPress={()=>this.finalizeDate}></Button>
 
         </ScrollView>
 
