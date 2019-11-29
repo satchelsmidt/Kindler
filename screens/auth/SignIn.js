@@ -84,7 +84,7 @@ export default class GoogleSignIn extends Component {
         </Header>
 
         {/* <Grid> */}
-          {/* <Col style={{ backgroundColor: '#635DB7', height: 300 }}> */}
+          <Col style={{ backgroundColor: '#635DB7', height: 300 }}>
             <View>
               <Image
                 style={styles.container, { width: 250, height: 250 }}

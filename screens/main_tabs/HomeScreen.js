@@ -27,7 +27,9 @@ export default class HomeScreen extends Component {
     });
 
     //route to grab all date information a user has 
-    //TODO: Needs be passed the user ID upon login 
+    //TODO: Needs be passed the user ID upon login
+    //5ddf4aa57d19091bf42f5fce => empty user  
+    //5dd625cd294dd35110a02b74 => user with dates
     axios.get(`https://obscure-springs-29928.herokuapp.com/date/all_dates/5dd625cd294dd35110a02b74`)
       .then(result =>
         this.setState({ data: result.data[0].dates })
