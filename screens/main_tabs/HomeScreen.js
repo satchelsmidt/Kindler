@@ -5,16 +5,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import axios from 'axios';
 import AppContainer from "../../components/DateList/DateListItems.component";
-import {
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Platform, StyleSheet, Text } from 'react-native';
 import 'react-navigation';
-
-// import { MonoText } from '../../components/StyledText';
 
 export default class HomeScreen extends Component {
   constructor(props) {
@@ -26,8 +18,9 @@ export default class HomeScreen extends Component {
   }
   static navigationOptions = {
     header: null
-}
+  }
 
+  //load default fonts for native base
   async componentDidMount() {
     await Font.loadAsync({
       Roboto: require('../../node_modules/native-base/Fonts/Roboto.ttf'),
@@ -35,11 +28,11 @@ export default class HomeScreen extends Component {
       ...Ionicons.font,
     });
 
+    //route to grab all date information a user has 
+    //TODO: Needs be passed the user ID upon login 
     axios.get(`https://obscure-springs-29928.herokuapp.com/date/all_dates/5dd625cd294dd35110a02b74`)
       .then(result =>
-        // console.log(result.data[0].dates)
         this.setState({ data: result.data[0].dates })
-
       )
       .catch(err => console.error(err))
 
@@ -53,13 +46,11 @@ export default class HomeScreen extends Component {
     }
 
     return (
+      //passing user data containing all date information into the navigation schema for the date/activites screens
       <AppContainer screenProps={{ data: this.state.data }} />
     )
   }
 }
-// HomeScreen.navigationOptions = {
-//   header: null,
-// };
 
 function DevelopmentModeNotice() {
   if (__DEV__) {
