@@ -4,8 +4,7 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/main_tabs/HomeScreen';
-// import CreateScreen from '../screens/main_tabs/LinksScreen';
-import SelectDateScreen from '../screens/create_flow/SelectDate'
+import InputDateScreen from '../screens/create_flow/InputDate'
 import InputFoodParams from '../screens/create_flow/InputFood'
 import InputMovieParams from '../screens/create_flow/InputMovie'
 import InputEventParams from '../screens/create_flow/InputEvent'
@@ -15,17 +14,24 @@ import ProfileScreen from '../screens/main_tabs/SettingsScreen';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
-  default: {},
+  headerMode: 'none',
+  navigationOptions: {
+    headerVisible: false,
+  }
 });
 
 const HomeStack = createStackNavigator(
   {
     Home: HomeScreen,
   },
-  config
+  config,
+  //   {
+  //   headerMode: 'screen',  // should work here
+  // }
 );
 
 HomeStack.navigationOptions = {
+  header: null,
   tabBarLabel: 'Home',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
@@ -41,18 +47,9 @@ HomeStack.navigationOptions = {
 
 HomeStack.path = '';
 
-// const CreateStack = createStackNavigator(
-//   {
-//     Create: CreateScreen,
-//   },
-//   config
-// );
-
 const CreateStack = createStackNavigator(
   {
-    //default screen given to us on this page, can modify or maybe remove entirely
-    // Create: CreateScreen,
-    Date: SelectDateScreen,
+    Date: InputDateScreen,
     Food: InputFoodParams,
     Movie: InputMovieParams,
     Event: InputEventParams,
@@ -62,6 +59,7 @@ const CreateStack = createStackNavigator(
 );
 
 CreateStack.navigationOptions = {
+  header: null,
   tabBarLabel: 'Create',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-add' : 'md-add'} />
@@ -78,6 +76,7 @@ const ProfileStack = createStackNavigator(
 );
 
 ProfileStack.navigationOptions = {
+  header: null,
   tabBarLabel: 'Profile',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-person' : 'md-person'} />
@@ -90,6 +89,13 @@ const tabNavigator = createBottomTabNavigator({
   HomeStack,
   CreateStack,
   ProfileStack,
+}, {
+  headerMode: 'none',
+  navigationOptions: {
+    header: null,
+    headerVisible: false,
+    headershown: false,
+  }
 });
 
 tabNavigator.path = '';
