@@ -4,7 +4,6 @@ import DatesScreen from "../../screens/date_list_flow/DateListScreen.screen";
 import DateItemDetailsScreen from "../../screens/date_list_flow/DateItemDetailsScreen.screen";
 import DateListItemsScreen from "../../screens/date_list_flow/DateListItemsScreen.screen";
 
-
 const config = {
     initialRouteName: 'AllDates',
     defaultNavigationOptions: {
@@ -15,6 +14,8 @@ const config = {
     }
 }
 
+//setup navigation for the date/activity viewing screens 
+//import each screen as a component 
 const AppNavigator = createStackNavigator({
     AllDates: { screen: DatesScreen },
     DateDetails: { screen: DateListItemsScreen },

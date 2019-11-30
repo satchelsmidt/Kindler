@@ -1,6 +1,7 @@
 import React from "react";
 import { List, ListItem, Thumbnail, Text, Left, Body, Right, Button } from 'native-base';
 
+//used for the date/activity viewing scheme 
 let ListOfItems = props => {
     return (
         <List>
