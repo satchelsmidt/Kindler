@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
 import { Image } from 'react-native';
-import { Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body } from 'native-base';
+import { Card, CardItem, Thumbnail, Text, Left, Body } from 'native-base';
 import ImageCarousel from '../DateList/Carousel.component';
 
-export default class CardShowcaseExample extends Component {
+//used to display the cumulative information for each activity 
+export default class Cards extends Component {
 
+    //generate a carousel component for the restaurant pictures 
     generateCarousel(props) {
+        //if sent an array of images, generate the carousel 
         if (props.entries !== undefined) {
             return <ImageCarousel entries={props.entries} />
         }
+        //if not, the item is either a movie or event, so just generate one image 
         else {
             return <Image source={props.pic} style={{ height: 200, width: 200, flex: 1 }} />
         }
@@ -28,22 +32,12 @@ export default class CardShowcaseExample extends Component {
                 </CardItem>
                 <CardItem>
                     <Body>
-                        {/* <Image source={this.props.pic} style={{ height: 200, width: 200, flex: 1 }} /> */}
-                        {/* <ImageCarousel entries={this.props.entries} /> */}
                         {this.generateCarousel(this.props)}
                         <Text>
                             {this.props.info}
                         </Text>
                     </Body>
                 </CardItem>
-                {/* <CardItem>
-                <Left>
-                    <Button transparent textStyle={{ color: '#87838B' }}>
-                        <Icon name="logo-github" />
-                        <Text>1,926 stars</Text>
-                    </Button>
-                </Left>
-            </CardItem> */}
             </Card>
         );
     }
