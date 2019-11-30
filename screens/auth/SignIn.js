@@ -91,7 +91,7 @@ export default class GoogleSignIn extends Component {
                 source={require('../../assets/images/fire.jpg')}
               />
             </View>
-          </Col>
+          {/* </Col> */}
           {/* <Col style={{ backgroundColor: '#00CE9F', height: 200 }}></Col> */}
         {/* </Grid> */}
 

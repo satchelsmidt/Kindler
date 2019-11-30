@@ -22,17 +22,18 @@ export default class EventSelection extends React.Component {
 
 SearchEvents = () => {
   
-  axios.get('https://obscure-springs-29928.herokuapp.com/events/find_events', {
-    parameters: {
-      "date": "2019-12-14",
-      "classification": this.state.classification,
-      "genre": this.state.genre
-    }.then(response => {
-      this.props.navigation.navigate("Event")
-    }, console.log("response: ", response))
-    .catch(error => {
-      console.log(error);
-    })
+  axios({
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache'
+    },
+    url: 'https://obscure-springs-29928.herokuapp.com/events/find_events',
+    data: {
+      date: "2019-12-14",
+      classification: "music",
+      genre: "Rock"
+    }
   })
 }
   
