@@ -1,24 +1,8 @@
 import React, { Component } from 'react';
-import { Image, Button, AsyncStorage, ScrollView } from 'react-native';
+import { Image, Button, AsyncStorage, ScrollView, Linking } from 'react-native';
 import { Container, Header, View, DeckSwiper, Card, CardItem, Thumbnail, Text, Left, Body, Icon } from 'native-base';
-
-const cards = [
-  {
-    text: 'Card One',
-    name: 'One',
-    image: require('../../assets/images/robot-dev.png'),
-  },
-  {
-    text: 'Card OTEO',
-    name: 'TWO',
-    image: require('../../assets/images/robot-prod.png'),
-  },
-  {
-    text: 'Card THE',
-    name: 'TRREE',
-    image: require('../../assets/images/splash.png')
-  }
-];
+let foodStockImage = require('../../assets/images/foods.jpg')
+let movieStockImage = require("../../assets/images/popin'corn.jpg")
 
 export default class DeckSwiperExample extends Component {
 
@@ -55,19 +39,16 @@ export default class DeckSwiperExample extends Component {
     }
   }
 
-  // updateCards =()=>{
-  //   this.state.restaurantData.map(e =>{
-  //     text: this.state.restaurantData.name,
-  //     name: this.state.restaurantData.name,
-  //     image:'../../assets/images/robot-dev.png'
-  //   })
-  // }
-// TODO: Actually send the data here to the server
-  finalizeDate=()=>{
+  // TODO: Actually send the data here to the server
+  finalizeDate = () => {
     this.setState({ dateData: '' })
-      this.setState({ restaurantData: '' })
-      this.setState({ movieData: '' })
-      console.log('data sent to server')
+    this.setState({ restaurantData: '' })
+    this.setState({ movieData: '' })
+    console.log('data sent to server')
+  }
+
+  saveCard = () => {
+    
   }
 
   componentWillMount() {
@@ -77,81 +58,64 @@ export default class DeckSwiperExample extends Component {
   render() {
 
     if (this.state.restaurantData.length === 0) {
-      return false //return false or a <Loader/> when you don't have anything in your message[]
+      return false
     } else if (this.state.movieData.length === 0) {
       return false
     }
     return (
 
       <Container>
-
         <ScrollView>
 
           <Container>
-            {/* <Header /> */}
-
-            {/* <ScrollView> */}
-            <View style={{ flexDirection: 'column', justifyContent: 'space-between' }}>
-
+            <View>
               <DeckSwiper
                 dataSource={this.state.restaurantData}
-                // dataSource={cards}
+                onSwipeRight={this.saveCard}
                 renderItem={item =>
-                  <Card style={{ elevation: 3 }}>
+                  <Card>
                     <CardItem>
                       <Left>
-                        <Thumbnail source={{uri:item.thumbnail}}/>
+                        <Thumbnail source={foodStockImage} />
                         <Body>
                           <Text>{item.name}</Text>
-                          <Text note>NativeBase</Text>
+                          <Text note style={{paddingBottom: 20}}>Phone: {item.phone}</Text>
                           <Text>Location: {item.location}</Text>
-                          <Text>Rating: {item.rating}</Text>
-                          <Text>Menu: {item.menu_link}</Text>
-
+                          <Text style={{paddingBottom: 20}}>Rating: {item.rating}</Text>
+                          <Text style={{ color: 'blue' }} onPress={() => Linking.openURL(item.menu_link)}>Menu</Text>
                         </Body>
                       </Left>
                     </CardItem>
                     <CardItem cardBody>
-                    <Image style={{ height: 30, width: 30, flex: 1 }} source={{uri:item.thumbnail}} />
-                    </CardItem>
-                    <CardItem>
-                      <Icon name="heart" style={{ color: '#ED4A6A' }} />
-                      <Text>Phone: {item.phone}</Text>
+                      {/* <Image style={{ height: 300, flex: 1 }} source={{ uri: item.thumbnail }} /> */}
+                      <Image style={{height: 200, flex: 1}}source={{ uri: item.thumbnail }} />
                     </CardItem>
                   </Card>
                 }
               />
             </View>
-
-            {/* </ScrollView> */}
           </Container>
 
           <Container>
             <View>
               <DeckSwiper
                 dataSource={this.state.movieData}
-                // dataSource={cards}
                 renderItem={item =>
-                  <Card style={{ elevation: 3 }}>
+                  <Card>
                     <CardItem>
                       <Left>
-                        {/* <Thumbnail source={item.poster} /> */}
+                        <Thumbnail source={movieStockImage} />
                         <Body>
                           <Text>{item.name}</Text>
-                          <Text note>NativeBase</Text>
-                          <Text>Location: {item.rating}</Text>
-                          <Text>Rating: {item.times}</Text>
-                          <Text>Menu: {item.overview}</Text>
-
+                          <Text note style={{paddingBottom: 20}}>Rating: {item.rating}</Text>
+                          <Text style={{paddingBottom: 20}}>Summary: {item.overview}</Text>
+                          <Text> Genres: {item.genres}</Text>
+                          <Text> Showtimes: {item.times}</Text>
                         </Body>
                       </Left>
                     </CardItem>
-                    {/* <CardItem cardBody> */}
-                    {/* <Image style={{ height: 300, flex: 1 }} source={item.thumbnail} /> */}
-                    {/* </CardItem> */}
-                    <CardItem>
-                      <Icon name="heart" style={{ color: '#ED4A6A' }} />
-                      <Text>Genres: {item.genres}</Text>
+                    <CardItem cardBody>
+                      <Image style={{height: 200, flex: 1}}source={{ uri: item.poster }} />
                     </CardItem>
                   </Card>
                 }
@@ -159,10 +123,35 @@ export default class DeckSwiperExample extends Component {
             </View>
           </Container>
 
-          <Button title="Submit Date" onPress={()=>this.finalizeDate}></Button>
+          {/* <Container>
+            <View style={{ flexDirection: 'column', justifyContent: 'space-between' }}>
+              <DeckSwiper
+                dataSource={this.state.restaurantData}
+                renderItem={item =>
+                  <Card style={{ elevation: 3 }}>
+                    <CardItem style={{ height: 200 }, { width: 200 }}>
+                      <Left>
+                        <Thumbnail source={foodStockImage} />
+                        <Body>
+                          <Text>{item.name}</Text>
+                          <Text note>Phone: {item.phone}</Text>
+                          <Text>Location: {item.location}</Text>
+                          <Text style={{paddingBottom: 20}}>Rating: {item.rating}</Text>
+                          <Text style={{ color: 'blue' }} onPress={() => Linking.openURL(item.menu_link)}>Menu</Text>
+                        </Body>
+                      </Left>
+                    </CardItem>
+                    <CardItem cardBody>
+                      <Image style={{ height: 300, flex: 1 }} source={{ uri: item.thumbnail }} />
+                    </CardItem>
+                  </Card>
+                }
+              />
+            </View>
+          </Container> */}
 
         </ScrollView>
-
+        <Button title="Submit Date" onPress={() => this.finalizeDate}></Button>
       </Container>
     );
   }

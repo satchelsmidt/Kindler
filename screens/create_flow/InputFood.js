@@ -44,15 +44,31 @@ export default class FoodSelection extends Component {
 
     SearchFoods = () => {
 
-
-        axios.get('https://obscure-springs-29928.herokuapp.com/resturants/get_resturants', {
-            parameters: {
-                "cuisine": this.state.cuisine,
-                "sortBy": this.state.sortby,
-                "location": "47.652071, -122.413393",
-                "offset": 0
+        axios({
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Cache-Control': 'no-cache'
+            },
+            url: 'https://obscure-springs-29928.herokuapp.com/resturants/get_resturants',
+            data: {
+              cuisine: this.state.cuisine,
+              sortBy: this.state.sortby,
+              location: "47.6062,122.3321",
+              offset: 0
             }
-        }).then(response => {
+          })
+
+
+        // axios.post('https://obscure-springs-29928.herokuapp.com/resturants/get_resturants', {
+        //     parameters: {
+        //         "cuisine": this.state.cuisine,
+        //         "sortBy": this.state.sortby,
+        //         "location": "47.652071, -122.413393",
+        //         "offset": 0
+            // }
+        // })
+        .then(response => {
             console.log("STATE OF CUISINE (apparently): ", this.state.cuisine)
             console.log('RESPONSE: ', response)
             this.props.navigation.navigate('Movie')
@@ -66,7 +82,7 @@ export default class FoodSelection extends Component {
     }
 
     handleInput = (value, name) => {
-        this.clearInitial()
+        // this.clearInitial()
 
         console.log('VALUE:', value)
         this.setState({
@@ -77,12 +93,12 @@ export default class FoodSelection extends Component {
         // console.log('cuisine after set:', this.state.cuisine)
     }
 
-    clearInitial = () => {
-        this.setState({
-            cuisine: '',
-            sortby: ''
-        })
-    }
+    // clearInitial = () => {
+    //     this.setState({
+    //         cuisine: '',
+    //         sortby: ''
+    //     })
+    // }
 
     render() {
 

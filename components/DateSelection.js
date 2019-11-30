@@ -18,10 +18,12 @@ export default class DatePickerComponent extends Component {
   }
   render() {
     return (
+      // <Container style={{width:100}, {height:200}}>
+      // <Container style={{flex:1}}>
       <Container>
         <Header />
         <Content>
-          <DatePicker 
+          <DatePicker
             defaultDate={new Date()}
             // minimumDate={new Date(2018, 1, 1)}
             // maximumDate={new Date(2018, 12, 31)}
@@ -35,12 +37,12 @@ export default class DatePickerComponent extends Component {
             placeHolderTextStyle={{ color: "#d3d3d3" }}
             onDateChange={this.setDate}
             disabled={false}
-            // date={this.state.chosenDate.toString().substr(4, 12)}
-            // handleInput={(date) => this.props.handleInput(date, 'date')}
-            />
-            <Text>
-              Date: {this.state.chosenDate.toString().substr(4, 12)}
-            </Text>
+          // date={this.state.chosenDate.toString().substr(4, 12)}
+          // handleInput={(date) => this.props.handleInput(date, 'date')}
+          />
+          <Text>
+            Date: {this.state.chosenDate.toString().substr(4, 12)}
+          </Text>
         </Content>
       </Container>
     );
