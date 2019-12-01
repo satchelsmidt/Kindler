@@ -3,8 +3,10 @@ import {
   ScrollView,
   View,
   Text,
-  Button
+  Button,
+  AsyncStorage
 } from 'react-native';
+import moment from 'moment';
 import 'react-navigation';
 import axios from 'axios';
 import EventCategorySelection from '../../components/EventCategorySelection';
@@ -17,67 +19,111 @@ export default class EventSelection extends React.Component {
   state = {
     date: '',
     classification: '',
-    genre: '',
+    genre: ''
   }
 
-SearchEvents = () => {
-  
-  axios({
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Cache-Control': 'no-cache'
-    },
-    url: 'https://obscure-springs-29928.herokuapp.com/events/find_events',
-    data: {
-      date: "2019-12-14",
-      classification: "music",
-      genre: "Rock"
+  getDate = async (key) => {
+    try {
+      const value = await AsyncStorage.getItem(key);
+      console.log(value)
+    } catch (error) {
+      console.log(error)
     }
-  })
-}
-  
+  }
+
+  SearchEvents = () => {
+
+    axios({
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache'
+      },
+      url: 'https://obscure-springs-29928.herokuapp.com/events/find_events',
+      data: {
+        date: moment(this.state.date).format('YYYY-MM-DD') ,
+        classification: this.state.classification,
+        genre: this.state.genre
+      }
+    })
+      .then(response => {
+        console.log(this.state.classification)
+        console.log(response)
+        this.props.navigation.navigate('Final')
+
+      })
+  }
+
+  componentWillMount() {
+    this.setState({
+      date: this.getDate('dateData')
+    })
+    console.log('DATE: ', this.state.date)
+  }
+
   handleInput = (value, name) => {
-      console.log("value:", value)
-      this.setState({
-        [name]: value
-      }, console.log("name: ", name))
-      
-      // console.log to make sure it works!
-      // console.log('here is the selection: ', this.state.sportselection)
-      console.log('here is the classification: ', this.state.classification)
-      console.log('here is the music selection: ', this.state.musicselection)
-      // console.log('here is the selection: ', this.state.artselection)
+    console.log("value:", value)
+    this.setState({
+      [name]: value
+    }, console.log("name: ", name))
+
+    // console.log to make sure it works!
+    // console.log('here is the selection: ', this.state.sportselection)
+    console.log('here is the classification: ', this.state.classification)
+    // console.log('here is the music selection: ', this.state.musicselection)
+    // console.log('here is the selection: ', this.state.artselection)
+  }
+
+  renderOne = () => {
+    if (this.state.classification === "music") {
+      return <MusicSelection genre={this.state.musicselection} handleInput={this.handleInput} />
+    } else if (this.state.classification === "sports") {
+      return <SportsSelection genre={this.state.sportselection} handleInput={this.handleInput} />
+    } else if (this.state.classification === "arts&theater") {
+      return <ArtsAndTheaterSelection genre={this.state.artselection} handleInput={this.handleInput} />
     }
-    
+    else { return }
+  }
 
-render() {
-    return(
-        <View>
+  render() {
+    if (this.state.date === 'null') {
+      return false
+    }
+    return (
+      <View>
 
-  <ScrollView>
+        <ScrollView>
 
-    <View>
-      <Text>THIS IS THE EVENT SELECTION SCREEN</Text>
-      {/* the following is coming from the respectiv files in the components folder */}
+          <View>
+            <Text>THIS IS THE EVENT SELECTION SCREEN</Text>
 
-      <EventCategorySelection classification={this.state.classification} handleInput={this.handleInput} />
+            <EventCategorySelection classification={this.state.classification} handleInput={this.handleInput} />
 
-          <SportsSelection sportselection={this.state.sportselection} handleInput={this.handleInput} />
+            <View>{this.renderOne()}</View>
 
-          <MusicSelection musicselection={this.state.musicselection} handleInput={this.handleInput} />
+            <Button
+              title="Next"
+              onPress={this.SearchEvents}
+            />
+          </View>
 
-          <ArtsAndTheaterSelection artselection={this.state.artselection} handleInput={this.handleInput} />
-      
-      <Button
-        title="Next"
-        onPress={this.SearchEvents}
-      />
-    </View>
-
-  </ScrollView>
-        </View >
-      );
+        </ScrollView>
+      </View >
+    );
+  }
 }
-}
 
+// if(this.state.classification === "music"){
+//   return <MusicSelection musicselection={this.state.musicselection} handleInput={this.handleInput} />
+// }else if (this.state.classification === "sports"){
+//   return <Text><SportsSelection sportselection={this.state.sportselection} handleInput={this.handleInput} /></Text>
+// }else if (this.state.classification === "arts&theater"){
+//   return <Text><ArtsAndTheaterSelection artselection={this.state.artselection} handleInput={this.handleInput} /></Text>
+// }
+// else {return}
+
+{/* <SportsSelection sportselection={this.state.sportselection} handleInput={this.handleInput} /> */ }
+
+{/* <MusicSelection musicselection={this.state.musicselection} handleInput={this.handleInput} /> */ }
+
+{/* <ArtsAndTheaterSelection artselection={this.state.artselection} handleInput={this.handleInput} /> */ }

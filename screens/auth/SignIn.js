@@ -83,17 +83,16 @@ export default class GoogleSignIn extends Component {
           <Text style={styles.headerText}>Welcome to Kindler</Text>
         </Header>
 
-        {/* <Grid> */}
-          {/* <Col style={{ backgroundColor: '#635DB7', height: 300 }}> */}
+        <Grid>
+          <Col style={{ backgroundColor: '#635DB7', height: 300 }}>
             <View>
               <Image
                 style={styles.container, { width: 250, height: 250 }}
                 source={require('../../assets/images/fire.jpg')}
               />
             </View>
-          {/* </Col> */}
-          {/* <Col style={{ backgroundColor: '#00CE9F', height: 200 }}></Col> */}
-        {/* </Grid> */}
+          </Col>
+        </Grid>
 
         <View style={styles.container}>
           <Button

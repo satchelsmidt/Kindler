@@ -17,14 +17,14 @@ export default class MusicSelection extends Component {
               style={{ width: 300 }}
               placeholder="Select a Musical Event!"
               selectedValue={this.props.musicselection}
-              onValueChange={(value) => this.props.handleInput(value, 'musicselection')}
+              onValueChange={(value) => this.props.handleInput(value, 'genre')}
             >
 
             {musicGenreIDs.map(e=>{
                 // console.log(' music data!!!', e)
                 // console.log("more music data!!", e.name)
 
-                return <Picker.Item label={e.name} value={e.id} />
+                return <Picker.Item label={e.name} value={e.name} />
                 })}
 
             </Picker>

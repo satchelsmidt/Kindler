@@ -17,13 +17,13 @@ export default class SportsSelection extends Component {
               style={{ width: 300 }}
               placeholder="Select a Sport Event!"
               selectedValue={this.props.sportselection}
-              onValueChange={(value) => this.props.handleInput(value, 'sportselection')}
+              onValueChange={(value) => this.props.handleInput(value, 'genre')}
             >
             {sportsIDs.map(e=>{
-                console.log(' sports data!!!', e)
-                console.log("more sports data!!", e.name)
+                // console.log(' sports data!!!', e)
+                // console.log("more sports data!!", e.name)
 
-                return <Picker.Item label={e.name} value={e.id} />
+                return <Picker.Item label={e.name} value={e.name} />
                 })}
             </Picker>
           </Form>

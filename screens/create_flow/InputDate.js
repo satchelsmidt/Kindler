@@ -44,7 +44,7 @@ export default class DateSelection extends Component {
 
         <ScrollView>
 
-          <View>
+          <View style={{flex:1}}>
             <Text>THIS IS THE DATE SELECTION SCREEN</Text>
             <DatePicker handleInput={this.handleInput}/>
             <Button
