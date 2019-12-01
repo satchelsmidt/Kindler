@@ -11,7 +11,8 @@ export default class HomeScreen extends Component {
     super(props);
     this.state = {
       isReady: false,
-      data: []
+      data: [],
+      userID: ''
     }
   }
   static navigationOptions = {
@@ -22,17 +23,27 @@ export default class HomeScreen extends Component {
   async componentDidMount() {
     await Font.loadAsync({
       Roboto: require('../../node_modules/native-base/Fonts/Roboto.ttf'),
+      Flower: require('../../assets/fonts/IndieFlower-Regular.ttf'),
       Roboto_medium: require('../../node_modules/native-base/Fonts/Roboto_medium.ttf'),
       ...Ionicons.font,
+      // 'KaushanScript-Regular': require('../../assets/fonts/KaushanScript-Regular.otf'),
     });
 
     //route to grab all date information a user has 
     //TODO: Needs be passed the user ID upon login
-    //5ddf4aa57d19091bf42f5fce => empty user  
-    //5dd625cd294dd35110a02b74 => user with dates
-    axios.get(`https://obscure-springs-29928.herokuapp.com/date/all_dates/5dd625cd294dd35110a02b74`)
-      .then(result =>
+    const userData = this.props.navigation.getParam('userData', 'nothing')
+    //assuming the data from the login screen wont get passed a 2nd time if we refresh this section 
+    if (this.state.userID === '') {
+      this.setState({ userID: userData[0]._id })
+    }
+
+
+    axios.get(`https://obscure-springs-29928.herokuapp.com/date/all_dates/${this.state.userID}`)
+      .then(result => {
+
         this.setState({ data: result.data[0].dates })
+        // console.log(result)
+      }
       )
       .catch(err => console.error(err))
 
@@ -47,6 +58,7 @@ export default class HomeScreen extends Component {
 
     return (
       //passing user data containing all date information into the navigation schema for the date/activites screens
+      //this.state.data
       <AppContainer screenProps={{ data: this.state.data }} />
     )
   }

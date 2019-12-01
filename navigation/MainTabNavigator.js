@@ -25,9 +25,6 @@ const HomeStack = createStackNavigator(
     Home: HomeScreen,
   },
   config,
-  //   {
-  //   headerMode: 'screen',  // should work here
-  // }
 );
 
 HomeStack.navigationOptions = {
