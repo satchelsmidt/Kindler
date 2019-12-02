@@ -11,7 +11,9 @@ const AuthStack = createStackNavigator({ SignIn: SignInScreen })
 // const CreateStack = createStackNavigator({Date: SelectDateScreen
 // })
 
+
 export default createAppContainer(
+
   createSwitchNavigator(
     {
       AuthLoading: AuthLoadingScreen,
