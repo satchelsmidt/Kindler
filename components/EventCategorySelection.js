@@ -13,7 +13,7 @@ export default class EventCategorySelection extends Component {
                             note
                             mode="dropdown"
                             style={{ width: 300 }}
-                            placeholder="Choose What You Want Do!"
+                            placeholder="Choose What You Want To Do!"
                             selectedValue={this.props.classification}
                             onValueChange={(value)=> this.props.handleInput(value, 'classification')}
                         >

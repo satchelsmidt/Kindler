@@ -9,7 +9,8 @@ export default class DeckSwiperExample extends Component {
   state = {
     dateData: '',
     restaurantData: '',
-    movieData: ''
+    movieData: '',
+    eventData: ''
   }
 
   _retrieveData = async (keys) => {
@@ -17,22 +18,28 @@ export default class DeckSwiperExample extends Component {
       const value = await AsyncStorage.multiGet(keys);
       console.log('value: ', value)
       const dateData = value[0]
-      const restaurantData = (JSON.parse(value[1][1]).data)
-      const movieData = (JSON.parse(value[2][1]).data)
+      // const restaurantData = (JSON.parse(value[1][1]).data)
+      // const movieData = (JSON.parse(value[2][1]).data)
+      const eventData = (JSON.parse(value))
+      console.log('result for eventata: ', eventData)
 
-      console.log('date Data: ', dateData)
-      console.log('RESTAURANTS Data: ', restaurantData)
-      console.log('movie Data: ', movieData)
+      // console.log('date Data: ', dateData)
+      // console.log('RESTAURANTS Data: ', restaurantData)
+      // console.log('movie Data: ', movieData)
+      console.log('event Data: ', eventData)
 
       this.setState({ dateData: dateData })
-      this.setState({ restaurantData: restaurantData })
-      this.setState({ movieData: movieData })
+      // this.setState({ restaurantData: restaurantData })
+      // this.setState({ movieData: movieData })
+      this.setState({ eventData: eventData })
 
-      console.log('this is DATE STATE: ', this.state.dateData)
-      console.log('this is RESTAURANT STATE: ', this.state.restaurantData)
-      console.log('this is MOVIE STATE: ', this.state.movieData)
+      // console.log('this is DATE STATE: ', this.state.dateData)
+      // console.log('this is RESTAURANT STATE: ', this.state.restaurantData)
+      // console.log('this is MOVIE STATE: ', this.state.movieData)
+      console.log('this is EVNT STATE: ', this.state.eventData)
 
-      console.log('bIG TEST SITUATION:', this.state.restaurantData[0].name)
+
+      // console.log('bIG TEST SITUATION:', this.state.restaurantData[0].name)
 
     } catch (error) {
       console.log(error)
@@ -42,8 +49,9 @@ export default class DeckSwiperExample extends Component {
   // TODO: Actually send the data here to the server
   finalizeDate = () => {
     this.setState({ dateData: '' })
-    this.setState({ restaurantData: '' })
-    this.setState({ movieData: '' })
+    // this.setState({ restaurantData: '' })
+    // this.setState({ movieData: '' })
+    this.setState({ eventData: '' })
     console.log('data sent to server')
   }
 
@@ -52,7 +60,7 @@ export default class DeckSwiperExample extends Component {
   }
 
   componentWillMount() {
-    this._retrieveData(['dateData', 'restaurantData', 'movieData'])
+    this._retrieveData(['dateData', 'restaurantData', 'movieData', 'eventData'])
   }
 
   render() {
@@ -60,6 +68,8 @@ export default class DeckSwiperExample extends Component {
     if (this.state.restaurantData.length === 0) {
       return false
     } else if (this.state.movieData.length === 0) {
+      return false
+    } else if (this.state.eventData.length === 0) {
       return false
     }
     return (
@@ -89,6 +99,35 @@ export default class DeckSwiperExample extends Component {
                     <CardItem cardBody>
                       {/* <Image style={{ height: 300, flex: 1 }} source={{ uri: item.thumbnail }} /> */}
                       <Image style={{height: 200, flex: 1}}source={{ uri: item.thumbnail }} />
+                    </CardItem>
+                  </Card>
+                }
+              />
+            </View>
+          </Container>
+
+          <Container>
+            <View>
+              <DeckSwiper
+                dataSource={this.state.eventData}
+                onSwipeRight={this.saveCard}
+                renderItem={({item}) =>
+                  <Card>
+                    <CardItem>
+                      <Left>
+                        <Thumbnail source={foodStockImage} />
+                        <Body>
+                          <Text>{item.name}</Text>
+                          <Text note style={{paddingBottom: 20}}>Venue: {item.venue}</Text>
+                          <Text>Date: {item.date}</Text>
+                          {/* <Text style={{paddingBottom: 20}}>Rating: {item.rating}</Text> */}
+                          <Text style={{ color: 'blue' }} onPress={() => Linking.openURL(item.link)}>Menu</Text>
+                        </Body>
+                      </Left>
+                    </CardItem>
+                    <CardItem cardBody>
+                      {/* <Image style={{ height: 300, flex: 1 }} source={{ uri: item.thumbnail }} /> */}
+                      <Image style={{height: 200, flex: 1}}source={{ uri: item.image }} />
                     </CardItem>
                   </Card>
                 }
