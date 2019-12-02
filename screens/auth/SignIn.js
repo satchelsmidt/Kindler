@@ -214,6 +214,35 @@ export default class GoogleSignIn extends Component {
     //     </View>
     //   </Container>
     // );
+=======
+    return (
+
+      <Container>
+        <Header>
+          <Text style={styles.headerText}>Welcome to Kindler</Text>
+        </Header>
+
+        <Grid>
+          <Col style={{ backgroundColor: '#635DB7', height: 300 }}>
+            <View>
+              <Image
+                style={styles.container, { width: 250, height: 250 }}
+                source={require('../../assets/images/fire.jpg')}
+              />
+            </View>
+          </Col>
+        </Grid>
+
+        <View style={styles.container}>
+          <Button
+            title="Login with Google"
+            onPress={this._handleGoogleLogin}
+          />
+        </View>
+
+      </Container>
+
+    );
   }
 }
 
