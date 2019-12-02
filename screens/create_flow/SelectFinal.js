@@ -96,6 +96,8 @@ export default class DeckSwiperExample extends Component {
             </View>
           </Container>
 
+          
+
           <Container>
             <View>
               <DeckSwiper
