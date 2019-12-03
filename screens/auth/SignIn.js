@@ -214,7 +214,7 @@ export default class GoogleSignIn extends Component {
     //     </View>
     //   </Container>
     // );
-=======
+// =======
     return (
 
       <Container>
