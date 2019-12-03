@@ -17,7 +17,8 @@ export default class DeckSwiperExample extends Component {
     selectedMovie: '',
     selectedMovieID: '',
     selectedEvent: '',
-    selectedEventID: ''
+    selectedEventID: '',
+    userID: ''
   }
 
   _retrieveData = async (keys) => {
@@ -28,18 +29,19 @@ export default class DeckSwiperExample extends Component {
       const restaurantData = (JSON.parse(value[1][1]).data)
       const movieData = (JSON.parse(value[2][1]).data)
       const eventData = (JSON.parse(value[3][1]).data)
+      const userID = (value[4][1])
 
       console.log('date Data: ', dateData)
       console.log('RESTAURANTS Data: ', restaurantData)
       console.log('movie Data: ', movieData)
       console.log('EVENT Data: ', eventData)
-
+      console.log('USER ID: ', userID)
 
       this.setState({ dateData: dateData })
       this.setState({ restaurantData: restaurantData })
       this.setState({ movieData: movieData })
       this.setState({ eventData: eventData })
-
+      this.setState({ userID: userID })
 
       console.log('this is DATE STATE: ', this.state.dateData)
       console.log('this is RESTAURANT STATE: ', this.state.restaurantData)
@@ -69,8 +71,8 @@ export default class DeckSwiperExample extends Component {
       data: {
         "resturantID": this.state.selectedRestaurantID,
         // movieID: this.state.movieDataID,
-        // eventID: this.state.eventDataID,
-        "userID": '5dd625cd294dd35110a02b74'
+        "eventID": this.state.selectedEventID,
+        "userID": this.state.userID
       }
     })
 
@@ -82,6 +84,8 @@ export default class DeckSwiperExample extends Component {
     this.setState({ restaurantData: '' })
     this.setState({ movieData: '' })
     console.log('data sent to server')
+    this.props.navigation.navigate('Home')
+
   }
 
   storeRestaurantData = () => {
@@ -103,12 +107,14 @@ export default class DeckSwiperExample extends Component {
         "rating": this.state.selectedRestaurant.rating,
         "food_photos": this.state.selectedRestaurant.food_photos,
         "phone": this.state.selectedRestaurant.phone,
-        "menu_link": this.state.selectedRestaurant.menu_link
+        "menu_link": this.state.selectedRestaurant.menu_link,
+        // "type":
+        // TODO: Add cuisine selected for 'type' 
       }
     }).then(response => {
       console.log('AXIOS CALL COMPLETED')
       console.log('RESPONSE: ', response)
-      this.setState({ selectedRestaurantID: response.data._id }, () => console.log("ID THAT WE ARE STORING: ", this.state.selectedRestaurantID))
+      this.setState({ selectedRestaurantID: response.data._id }, () => console.log("RESTAURANT ID THAT WE ARE STORING: ", this.state.selectedRestaurantID))
     })
   }
 
@@ -152,21 +158,19 @@ export default class DeckSwiperExample extends Component {
       },
       url: 'https://obscure-springs-29928.herokuapp.com/events/store_event',
       data: {
-        "name": this.state.selected.name,
-        "link": this.state.selected.link,
-        "time": this.state.selected.time,
-        "price": this.state.selected.price,
-        "venue": this.state.selected.venue,
-        "image": this.state.selected.image,
-        "address": this.state.selected.address,
-        "date": this.state.selected.date
-            // "type":
-                  // TODO: Add cuisine selected for 'type' 
+        "name": this.state.selectedEvent.name,
+        "link": this.state.selectedEvent.link,
+        "time": this.state.selectedEvent.time,
+        "price": this.state.selectedEvent.price,
+        "venue": this.state.selectedEvent.venue,
+        "image": this.state.selectedEvent.image,
+        "address": this.state.selectedEvent.address,
+        "date": this.state.selectedEvent.date
       }
     }).then(response => {
       console.log('AXIOS CALL COMPLETED')
       console.log('RESPONSE: ', response)
-      this.setState({ selectedEventID: response.data._id }, () => console.log("ID THAT WE ARE STORING: ", this.state.selectedEventID))
+      this.setState({ selectedEventID: response.data._id }, () => console.log("EVENT ID THAT WE ARE STORING: ", this.state.selectedEventID))
     })
   }
 
@@ -198,7 +202,7 @@ export default class DeckSwiperExample extends Component {
   }
 
   componentWillMount() {
-    this._retrieveData(['dateData', 'restaurantData', 'movieData', 'eventData'])
+    this._retrieveData(['dateData', 'restaurantData', 'movieData', 'eventData', 'userDataMongo'])
   }
 
   render() {
@@ -207,8 +211,8 @@ export default class DeckSwiperExample extends Component {
       return false
     } else if (this.state.movieData.length === 0) {
       return false
-    } else if (this.state.eventData.length === 0){
-      return false 
+    } else if (this.state.eventData.length === 0) {
+      return false
     }
     return (
 
@@ -261,6 +265,17 @@ export default class DeckSwiperExample extends Component {
             <View>
               <DeckSwiper
                 dataSource={this.state.eventData}
+                onSwipeRight={item => console.log(item.name)}
+                onSwipeRight={item => this.saveEventCard({
+                  "name": item.name,
+                  "link": item.link,
+                  "time": item.time,
+                  "price": item.price,
+                  "venue": item.venue,
+                  "image": item.image,
+                  "address": item.address,
+                  "date": item.dates
+                })}
                 renderItem={item =>
                   <Card>
                     <CardItem>
@@ -312,7 +327,7 @@ export default class DeckSwiperExample extends Component {
             </View>
           </Container>
 
-          
+
 
           {/* <Container>
             <View style={{ flexDirection: 'column', justifyContent: 'space-between' }}>

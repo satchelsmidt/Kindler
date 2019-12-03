@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { AsyncStorage } from 'react-native';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
@@ -19,6 +20,16 @@ export default class HomeScreen extends Component {
     header: null
   }
 
+  //function to store user data (Mongo)
+  async setToken(user) {
+    try {
+        await AsyncStorage.setItem("userDataMongo", user)
+        console.log("storage success")
+    } catch (error) {
+        console.log("something went wrong: ", error)
+    }
+}
+
   //load default fonts for native base
   async componentDidMount() {
     await Font.loadAsync({
@@ -30,28 +41,68 @@ export default class HomeScreen extends Component {
     });
 
     //route to grab all date information a user has 
-    //TODO: Needs be passed the user ID upon login
     const userData = this.props.navigation.getParam('userData', 'nothing')
+    console.log('USER DATA: ', userData)
+
+    let otherUserData = await AsyncStorage.getItem("userData");
+    console.log('OTHER USER DATA: ', otherUserData)
+
     //assuming the data from the login screen wont get passed a 2nd time if we refresh this section 
     if (this.state.userID === '') {
-      this.setState({ userID: userData[0]._id })
+      //persistent user 
+      if (userData[0] === undefined) {
+        //do the axios call 
+        axios.get(`https://obscure-springs-29928.herokuapp.com/date/find_user/${otherUserData}`)
+          .then(dbUser => {
+            //axios get all user date information 
+
+
+            this.setToken(dbUser.data[0]._id)
+
+          //   async setToken(user) {
+          //     try {
+          //         await AsyncStorage.setItem("userData", user)
+          //         console.log("storage success")
+          //     } catch (error) {
+          //         console.log("something went wrong: ", error)
+          //     }
+          // }
+
+            axios.get(`https://obscure-springs-29928.herokuapp.com/date/all_dates/${dbUser.data[0]._id}`)
+              .then(dbAllDates => {
+                //then set the state of the data to the return
+                this.setState({ data: dbAllDates.data[0].dates })
+              })
+              .catch(err => console.error(err))
+
+            this.setState({ isReady: true });
+
+
+          })
+          .catch(err => console.error(err))
+      }
+
+      //fresh login 
+      else {
+        this.setState({ userID: userData[0]._id })
+
+        axios.get(`https://obscure-springs-29928.herokuapp.com/date/all_dates/${this.state.userID}`)
+
+          .then(result => {
+
+            this.setState({ data: result.data[0].dates })
+            // console.log(result)
+          }
+          )
+          .catch(err => console.error(err))
+
+        this.setState({ isReady: true });
+      }
     }
 
-
-    // axios.get(`https://obscure-springs-29928.herokuapp.com/date/all_dates/${this.state.userID}`)
-    axios.get('https://obscure-springs-29928.herokuapp.com/date/all_dates/5dd625cd294dd35110a02b74')
-
-  
-      .then(result => {
-
-        this.setState({ data: result.data[0].dates })
-        // console.log(result)
-      }
-      )
-      .catch(err => console.error(err))
-
-    this.setState({ isReady: true });
   }
+  // console.log('GOOGLE ID: ', this.props.navigation.state.params.userData.user.id)
+
 
   render() {
 
