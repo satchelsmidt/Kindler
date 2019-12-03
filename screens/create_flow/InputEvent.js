@@ -31,6 +31,16 @@ export default class EventSelection extends React.Component {
     }
   }
 
+  _storeData = async (data) => {
+    try {
+      await AsyncStorage.setItem('eventData', JSON.stringify(data))
+      console.log("the event data we saved", JSON.stringify(data))
+      alert("saved")
+    }catch(error){
+    console.log(error)
+    }
+  }
+
   SearchEvents = () => {
 
     axios({
@@ -50,7 +60,7 @@ export default class EventSelection extends React.Component {
         console.log(this.state.classification)
         console.log(response)
         this.props.navigation.navigate('Final')
-
+        this._storeData(response)
       })
   }
 
