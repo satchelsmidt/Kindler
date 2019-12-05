@@ -36,7 +36,7 @@ export default class GoogleSignIn extends Component {
     try {
       let result = await AsyncStorage.getItem("userData")
       let data = JSON.parse(result)
-      console.log('LOCAL STORAGE DATA: ', data)
+      // console.log('LOCAL STORAGE DATA: ', data)
       if (result) {
         this.setState({ isReady: true, isAuthenticated: true, userData: data })
       } else {
@@ -57,12 +57,12 @@ export default class GoogleSignIn extends Component {
   }
 
   goToLoginScreen = () => {
-    console.log('Rendering home')
+    // console.log('Rendering home')
     this.props.navigation.navigate('Login')
   }
 
   goToHomeScreen = () => {
-    console.log('STATE: ', this.state.userData)
+    // console.log('STATE: ', this.state.userData)
     this.props.navigation.navigate('Home', { userData: this.state.userData })
   }
 
