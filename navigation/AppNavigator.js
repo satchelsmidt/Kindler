@@ -17,9 +17,6 @@ const AuthStack = createStackNavigator({
     }
   }
 })
-// const CreateStack = createStackNavigator({Date: SelectDateScreen
-// })
-
 
 export default createAppContainer(
 
@@ -28,7 +25,6 @@ export default createAppContainer(
       AuthLoading: AuthLoadingScreen,
       Auth: AuthStack,
       App: AppStack,
-      // Create: CreateStack
     },
     {
       headerMode: 'none',

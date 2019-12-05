@@ -4,6 +4,7 @@ import { Container, Header, View, DeckSwiper, Card, CardItem, Thumbnail, Text, L
 let foodStockImage = require('../../assets/images/foods.jpg')
 let movieStockImage = require("../../assets/images/popin'corn.jpg")
 import axios from 'axios';
+import moment from 'moment'
 
 export default class DeckSwiperExample extends Component {
 
@@ -18,30 +19,37 @@ export default class DeckSwiperExample extends Component {
     selectedMovieID: '',
     selectedEvent: '',
     selectedEventID: '',
-    userID: ''
+    userID: '',
+    selectedCuisine: ''
   }
 
   _retrieveData = async (keys) => {
     try {
       const value = await AsyncStorage.multiGet(keys);
       console.log('value: ', value)
-      const dateData = value[0]
+      const dateData = moment(value[0][1]).format('YYYY-MM-DD')
       const restaurantData = (JSON.parse(value[1][1]).data)
       const movieData = (JSON.parse(value[2][1]).data)
       const eventData = (JSON.parse(value[3][1]).data)
       const userID = (value[4][1])
+      const selectedCuisine = (value[5][1])
+      const selectedEventType = (value[6][1])
 
       console.log('date Data: ', dateData)
       console.log('RESTAURANTS Data: ', restaurantData)
       console.log('movie Data: ', movieData)
       console.log('EVENT Data: ', eventData)
       console.log('USER ID: ', userID)
+      console.log('SELECTED CUISINE: ', selectedCuisine)
+      console.log('SELECTED EVENT TYPE: ', selectedEventType)
 
       this.setState({ dateData: dateData })
       this.setState({ restaurantData: restaurantData })
       this.setState({ movieData: movieData })
       this.setState({ eventData: eventData })
       this.setState({ userID: userID })
+      this.setState({ selectedCuisine: selectedCuisine })
+      this.setState({ selectedEventType: selectedEventType })
 
       console.log('this is DATE STATE: ', this.state.dateData)
       console.log('this is RESTAURANT STATE: ', this.state.restaurantData)
@@ -70,7 +78,7 @@ export default class DeckSwiperExample extends Component {
       url: 'https://obscure-springs-29928.herokuapp.com/date/add_date',
       data: {
         "resturantID": this.state.selectedRestaurantID,
-        // movieID: this.state.movieDataID,
+        "movieID": this.state.selectedMovieID,
         "eventID": this.state.selectedEventID,
         "userID": this.state.userID
       }
@@ -83,6 +91,8 @@ export default class DeckSwiperExample extends Component {
     this.setState({ dateData: '' })
     this.setState({ restaurantData: '' })
     this.setState({ movieData: '' })
+    this.setState({ eventData: '' })
+
     console.log('data sent to server')
     this.props.navigation.navigate('Home')
 
@@ -108,8 +118,7 @@ export default class DeckSwiperExample extends Component {
         "food_photos": this.state.selectedRestaurant.food_photos,
         "phone": this.state.selectedRestaurant.phone,
         "menu_link": this.state.selectedRestaurant.menu_link,
-        // "type":
-        // TODO: Add cuisine selected for 'type' 
+        "type": this.state.selectedCuisine
       }
     }).then(response => {
       console.log('AXIOS CALL COMPLETED')
@@ -120,7 +129,7 @@ export default class DeckSwiperExample extends Component {
 
   storeMovieData = () => {
 
-    console.log("Selected Name:", this.state.selectedRestaurant.name)
+    console.log("Selected Name:", this.state.selectedMovie.name)
 
     axios({
       method: 'POST',
@@ -128,21 +137,16 @@ export default class DeckSwiperExample extends Component {
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache'
       },
-      url: 'https://obscure-springs-29928.herokuapp.com/resturants/store_resturant',
+      url: 'https://obscure-springs-29928.herokuapp.com/movies/get_movie_theater',
       data: {
-        "name": this.state.selectedRestaurant.name,
-        "location": this.state.selectedRestaurant.location,
-        "times": this.state.selectedRestaurant.times,
-        "thumbnail": this.state.selectedRestaurant.thumbnail,
-        "rating": this.state.selectedRestaurant.rating,
-        "food_photos": this.state.selectedRestaurant.food_photos,
-        "phone": this.state.selectedRestaurant.phone,
-        "menu_link": this.state.selectedRestaurant.menu_link
+        "movie": this.state.selectedMovie.name,
+        "location": '47.6062, -122.3321',
+        "date": this.state.dateData
       }
     }).then(response => {
       console.log('AXIOS CALL COMPLETED')
       console.log('RESPONSE: ', response)
-      this.setState({ selectedRestaurantID: response.data._id }, () => console.log("ID THAT WE ARE STORING: ", this.state.selectedRestaurantID))
+      this.setState({ selectedMovieID: response.data[0].movies[0]._id }, () => console.log("ID THAT WE ARE STORING: ", this.state.selectedMovieID))
     })
   }
 
@@ -165,7 +169,8 @@ export default class DeckSwiperExample extends Component {
         "venue": this.state.selectedEvent.venue,
         "image": this.state.selectedEvent.image,
         "address": this.state.selectedEvent.address,
-        "date": this.state.selectedEvent.date
+        "date": this.state.selectedEvent.date,
+        "type": this.state.selectedEventType
       }
     }).then(response => {
       console.log('AXIOS CALL COMPLETED')
@@ -188,6 +193,9 @@ export default class DeckSwiperExample extends Component {
   }
 
   saveMovieCard = (data) => {
+
+    console.log("date format for movies: ", this.state.dateData)
+
     this.setState(
       { selectedMovie: data },
       () => this.storeMovieData()
@@ -202,7 +210,7 @@ export default class DeckSwiperExample extends Component {
   }
 
   componentWillMount() {
-    this._retrieveData(['dateData', 'restaurantData', 'movieData', 'eventData', 'userDataMongo'])
+    this._retrieveData(['dateData', 'restaurantData', 'movieData', 'eventData', 'userDataMongo', 'selectedCuisine', 'selectedEventType'])
   }
 
   render() {
@@ -304,6 +312,10 @@ export default class DeckSwiperExample extends Component {
             <View>
               <DeckSwiper
                 dataSource={this.state.movieData}
+                onSwipeRight={item => console.log(item.name)}
+                onSwipeRight={item => this.saveMovieCard({
+                  "name": item.name
+                })}
                 renderItem={item =>
                   <Card>
                     <CardItem>

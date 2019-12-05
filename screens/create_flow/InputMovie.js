@@ -16,45 +16,34 @@ export default class FoodSelection extends Component {
     genre: ''
   }
 
-  _storeData = async(data)=>{
-    try{
-        await AsyncStorage.setItem('movieData', JSON.stringify(data))
-        alert("saved")
+  _storeData = async (data) => {
+    try {
+      await AsyncStorage.setItem('movieData', JSON.stringify(data))
+      alert("saved")
     } catch (error) {
-        console.log(error)
+      console.log(error)
     }
-}
+  }
 
   SearchMovies = () => {
-
-    // console.log("LOG SOMETHING FOR GODS SAKE: ", this.props.navigation)
-    // this.props.navigation.navigate('Event')
-
 
     axios.get('https://obscure-springs-29928.herokuapp.com/movies/get_movies/' + this.state.genre)
       .then(response => {
         this.props.navigation.navigate('Event')
-        console.log('response: ', response)
         this._storeData(response)
       })
   }
 
   handleInput = (value, name) => {
-    // console.log('value:', value)
     this.setState({
-      // [name]: value.slice(1, -1)
       [name]: value
-    })
-    console.log('genre after set: ', this.state.genre)
+    }, () => console.log('genre after set: ', this.state.genre))
   }
-
 
   render() {
     return (
       <View>
-
         <ScrollView>
-
           <View>
             <Text>THIS IS THE MOVIE SELECTION SCREEN</Text>
             <GenrePicker genre={this.state.genre} handleInput={this.handleInput} />
@@ -63,7 +52,6 @@ export default class FoodSelection extends Component {
               onPress={this.SearchMovies}
             />
           </View>
-
         </ScrollView>
       </View>
     );

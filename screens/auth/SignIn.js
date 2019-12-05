@@ -42,7 +42,6 @@ export default class GoogleSignIn extends Component {
       } else {
         this.setState({ isReady: true, isAuthenticated: false })
       }
-      // console.log(data)
     } catch (error) {
       console.log("something went wrong... ", error)
     }
