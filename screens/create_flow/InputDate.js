@@ -4,7 +4,8 @@ import {
   View,
   Text,
   Button,
-  AsyncStorage
+  AsyncStorage,
+  StyleSheet
 } from 'react-native';
 import DatePicker from '../../components/DateSelection';
 import 'react-navigation';
@@ -48,7 +49,7 @@ export default class DateSelection extends Component {
              <Title>Select a Date</Title>
            </Body>
          </Header> */}
-        <Content>
+        <Content style={styles.content}>
           <DatePicker handleInput={this.handleInput} />
         </Content>
         <Button
@@ -61,3 +62,10 @@ export default class DateSelection extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  content: {
+    alignContent: 'center',
+
+  }
+})
