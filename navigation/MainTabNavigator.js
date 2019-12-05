@@ -1,6 +1,8 @@
 import React from 'react';
 import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
+import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
+
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/main_tabs/HomeScreen';
@@ -82,7 +84,7 @@ ProfileStack.navigationOptions = {
 
 ProfileStack.path = '';
 
-const tabNavigator = createBottomTabNavigator({
+const tabNavigator = createMaterialBottomTabNavigator({
   HomeStack,
   CreateStack,
   ProfileStack,
@@ -92,7 +94,10 @@ const tabNavigator = createBottomTabNavigator({
     header: null,
     headerVisible: false,
     headershown: false,
-  }
+  },
+  activeColor: '#13ff8a',
+  inactiveColor: '#3e2465',
+  barStyle: { backgroundColor: 'black' },
 });
 
 tabNavigator.path = '';

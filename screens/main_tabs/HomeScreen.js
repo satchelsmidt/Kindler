@@ -23,12 +23,16 @@ export default class HomeScreen extends Component {
   //function to store user data (Mongo)
   async setToken(user) {
     try {
-        await AsyncStorage.setItem("userDataMongo", user)
-        console.log("storage success")
+      await AsyncStorage.setItem("userDataMongo", user)
+      // console.log("storage success")
     } catch (error) {
-        console.log("something went wrong: ", error)
+      // console.log("something went wrong: ", error)
     }
-}
+  }
+
+
+
+
 
   //load default fonts for native base
   async componentDidMount() {
@@ -42,10 +46,10 @@ export default class HomeScreen extends Component {
 
     //route to grab all date information a user has 
     const userData = this.props.navigation.getParam('userData', 'nothing')
-    console.log('USER DATA: ', userData)
+    // console.log('USER DATA: ', userData)
 
     let otherUserData = await AsyncStorage.getItem("userData");
-    console.log('OTHER USER DATA: ', otherUserData)
+    // console.log('OTHER USER DATA: ', otherUserData)
 
     //assuming the data from the login screen wont get passed a 2nd time if we refresh this section 
     if (this.state.userID === '') {
@@ -59,14 +63,14 @@ export default class HomeScreen extends Component {
 
             this.setToken(dbUser.data[0]._id)
 
-          //   async setToken(user) {
-          //     try {
-          //         await AsyncStorage.setItem("userData", user)
-          //         console.log("storage success")
-          //     } catch (error) {
-          //         console.log("something went wrong: ", error)
-          //     }
-          // }
+            //   async setToken(user) {
+            //     try {
+            //         await AsyncStorage.setItem("userData", user)
+            //         console.log("storage success")
+            //     } catch (error) {
+            //         console.log("something went wrong: ", error)
+            //     }
+            // }
 
             axios.get(`https://obscure-springs-29928.herokuapp.com/date/all_dates/${dbUser.data[0]._id}`)
               .then(dbAllDates => {
@@ -103,7 +107,26 @@ export default class HomeScreen extends Component {
   }
   // console.log('GOOGLE ID: ', this.props.navigation.state.params.userData.user.id)
 
+  //for refreshing
+  refreshUserData = async () => {
 
+    let otherUserData = await AsyncStorage.getItem("userData");
+
+    axios.get(`https://obscure-springs-29928.herokuapp.com/date/find_user/${otherUserData}`)
+      .then(dbUser => {
+
+        // console.log(dbUser.data)
+        axios.get(`https://obscure-springs-29928.herokuapp.com/date/all_dates/${dbUser.data[0]._id}`)
+          .then(dbAllDates => {
+            //then set the state of the data to the return
+            this.setState({ data: dbAllDates.data[0].dates })
+          })
+          .catch(err => console.error(err))
+
+      })
+      .catch(err => console.error(err))
+    // console.log('Hello')
+  }
   render() {
 
     if (!this.state.isReady) {
@@ -113,7 +136,7 @@ export default class HomeScreen extends Component {
     return (
       //passing user data containing all date information into the navigation schema for the date/activites screens
       //this.state.data
-      <AppContainer screenProps={{ data: this.state.data }} />
+      <AppContainer screenProps={{ data: this.state.data, refresh: this.refreshUserData }} />
     )
   }
 }
