@@ -33,7 +33,7 @@ export default class EventSelection extends React.Component {
 
       const dateData = moment(value).format('YYYY-MM-DD')
       console.log("this is DATE DATA: ", dateData)
-      this.setState({date: dateData})
+      this.setState({ date: dateData })
 
       console.log("State of Date:", this.state.date)
     } catch (error) {
@@ -44,8 +44,8 @@ export default class EventSelection extends React.Component {
   _storeData = async (data) => {
     try {
       await AsyncStorage.setItem('eventData', JSON.stringify(data))
-      console.log("the event data we saved", JSON.stringify(data))
-      alert("saved")
+      // console.log("the event data we saved", JSON.stringify(data))
+      // alert("saved")
     } catch (error) {
       console.log(error)
     }
@@ -55,7 +55,7 @@ export default class EventSelection extends React.Component {
     try {
       await AsyncStorage.setItem('selectedEventType', JSON.stringify(data))
       console.log("THE DATA WE SAVED: ", JSON.stringify(data))
-      alert("saved")
+      // alert("saved")
     } catch (error) {
       console.log(error)
     }
@@ -79,7 +79,7 @@ export default class EventSelection extends React.Component {
       .then(response => {
         console.log(this.state.classification)
         console.log(response)
-        this.setState({date: ''})
+        this.setState({ date: '' })
         this.props.navigation.navigate('Final')
         this._storeData(response)
       })
@@ -92,7 +92,7 @@ export default class EventSelection extends React.Component {
   // }
 
   componentWillMount() {
-      this.getDate('dateData')
+    this.getDate('dateData')
   }
 
   handleInput = (value, name) => {
@@ -119,23 +119,18 @@ export default class EventSelection extends React.Component {
     }
     return (
       <Container>
-       {/* <View>
-         <ScrollView>
-         <View style={styles.container}>
-           <View style={styles.navBar}>
-             <View style={styles.leftNav}>
-            <Image source={require('../../assets/images/campfire.jpg')} style={{width:98, height:76}} />
-           </View>
-           </View> */}
-          
-         {/* <Text>THIS IS THE EVENT SELECTION SCREEN</Text> */}
+        <ImageBackground
+          style={{ width: '100%', height: '100%' }}
+          source={require('../../assets/images/theater_2.jpg')}
+        >
+          <Text>THIS IS THE EVENT SELECTION SCREEN</Text>
 
-        <Content>
-          <EventCategorySelection classification=
-          {this.state.classification} handleInput=
-          {this.handleInput} />
+          <Content>
+            <EventCategorySelection classification=
+              {this.state.classification} handleInput=
+              {this.handleInput} />
 
-          <View>{this.renderOne()}</View>
+            <View>{this.renderOne()}</View>
 
           </Content>
 
@@ -143,16 +138,13 @@ export default class EventSelection extends React.Component {
             title="Next"
             onPress={this.SearchEvents}
           />
-       {/* </View>
 
-      </ScrollView>
-      </View > */}
-      
+        </ImageBackground>
       </Container>
     );
   }
 }
-    
+
 const styles = StyleSheet.create({
   container: {
     flex: 1
@@ -163,7 +155,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     flexDirection: 'row',
     justifyContent: 'space-around'
-  }, 
+  },
   leftNav: {
     flexDirection: 'row',
     padding: 20

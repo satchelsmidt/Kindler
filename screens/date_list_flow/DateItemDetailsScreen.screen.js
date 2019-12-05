@@ -6,7 +6,7 @@ export default class DateItemDetailsScreen extends Component {
     static navigationOptions = {
         title: 'Activity Details',
         headerStyle: {
-            backgroundColor: '#d56e0a',
+            backgroundColor: '#c4a494',
         }
     };
 
@@ -23,6 +23,11 @@ export default class DateItemDetailsScreen extends Component {
                 title={data.name}
                 pic={thumbnail}
                 entries={data.food_photos}
+                rating={data.rating}
+                info={data.location}
+                time={data.times}
+                phone={data.phone}
+                menu={data.menu_link}
             />
         }
         //if the activity is a movie, it should have a '.poster' property
@@ -37,6 +42,12 @@ export default class DateItemDetailsScreen extends Component {
                 pic={poster}
                 date={data.date}
                 info={data.overview}
+                rating={data.rating}
+                times={data.times}
+                links={data.links}
+                movieID={data._id}
+                imgHeight={300}
+                imgWidth={200}
             />
         }
         //otherwise the activity is an event 
@@ -50,6 +61,15 @@ export default class DateItemDetailsScreen extends Component {
                 title={data.name}
                 pic={image}
                 date={data.date}
+                rating={data.rating}
+                time={data.time}
+                venue={data.venue}
+                address={data.address}
+                link={data.link}
+                currency={data.price[0].currency}
+                price={data.price[0].min + '-' + data.price[0].max}
+                imgHeight={300}
+                imgWidth={350}
             />
         }
     }

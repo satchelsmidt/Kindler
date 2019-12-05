@@ -6,7 +6,7 @@ export default class DateListItemsScreen extends Component {
     static navigationOptions = {
         title: 'Date Activites',
         headerStyle: {
-            backgroundColor: '#ed7a0c',
+            backgroundColor: '#13ff8a',
         }
     };
 
@@ -23,7 +23,6 @@ export default class DateListItemsScreen extends Component {
                 <Content>
                     {
                         dataReferences.map((e, i) => {
-                            //go through each key and create a list item by calling related sub-keys on the data object
                             switch (e) {
                                 case 'resturants':
                                     let thumbnail = { uri: data.resturants.thumbnail }
@@ -31,7 +30,13 @@ export default class DateListItemsScreen extends Component {
                                         key={i}
                                         title={data.resturants.name}
                                         pic={thumbnail}
+                                        description={data.resturants.type}
                                         nav={() => { this.props.navigation.navigate('DateItem', { details: data.resturants }) }}
+                                        icon={'food-fork-drink'}
+                                        type={'MaterialCommunityIcons'}
+                                        iconSize={30}
+                                        colorChange2={'#c4a494'}
+                                        colorChange={'#a9adb7'}
                                     />
                                 case 'movies':
                                     let poster = { uri: data.movies.poster }
@@ -39,16 +44,27 @@ export default class DateListItemsScreen extends Component {
                                         key={i}
                                         title={data.movies.name}
                                         pic={poster}
-                                        description={data.movies.overview}
+                                        description={data.movies.genres.join(', ')}
                                         nav={() => { this.props.navigation.navigate('DateItem', { details: data.movies }) }}
+                                        icon={'ticket'}
+                                        type={'FontAwesome'}
+                                        iconSize={30}
+                                        colorChange2={'#c4a494'}
+                                        colorChange={'#a9adb7'}
                                     />
                                 case 'events':
                                     let image = { uri: data.events.image }
                                     return <ListOfItems
                                         key={i}
                                         title={data.events.name}
+                                        description={data.events.type}
                                         pic={image}
                                         nav={() => { this.props.navigation.navigate('DateItem', { details: data.events }) }}
+                                        icon={'event-seat'}
+                                        type={'MaterialIcons'}
+                                        iconSize={30}
+                                        colorChange2={'#c4a494'}
+                                        colorChange={'#a9adb7'}
                                     />
                                 default:
                                     return

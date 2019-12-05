@@ -123,9 +123,9 @@ class LoginScreen extends Component {
     async setToken(user) {
         try {
             await AsyncStorage.setItem("userData", user)
-            console.log("storage success")
+            // console.log("storage success")
         } catch (error) {
-            console.log("something went wrong: ", error)
+            // console.log("something went wrong: ", error)
         }
     }
 
@@ -148,7 +148,7 @@ class LoginScreen extends Component {
                     const user_name = result.user.name
 
                     this.setToken((user_auth))
-                    console.log('Google Result:', result)
+                    // console.log('Google Result:', result)
 
                     /*=============================================
                     =    User signup/login into mongodb          =

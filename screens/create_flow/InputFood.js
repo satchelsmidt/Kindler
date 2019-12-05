@@ -8,7 +8,7 @@ import {
     Image,
     StyleSheet,
     MaskedViewIOS,
-    // Container
+    ImageBackground
 } from 'react-native';
 import CuisinePicker from '../../components/FoodSelection';
 import SortBy from '../../components/FilterSelection'
@@ -26,8 +26,8 @@ export default class FoodSelection extends Component {
     _storeData = async (data) => {
         try {
             await AsyncStorage.setItem('restaurantData', JSON.stringify(data))
-            console.log("SAVED RESTAURANT DATA: ", JSON.stringify(data))
-            alert("saved")
+            // console.log("SAVED RESTAURANT DATA: ", JSON.stringify(data))
+            // alert("saved")
         } catch (error) {
             console.log(error)
         }
@@ -36,8 +36,8 @@ export default class FoodSelection extends Component {
     _storeFoodCuisine = async (data) => {
         try {
             await AsyncStorage.setItem('selectedCuisine', JSON.stringify(data))
-            console.log("SAVED CUISINE DATA: ", JSON.stringify(data))
-            alert("saved")
+            // console.log("SAVED CUISINE DATA: ", JSON.stringify(data))
+            // alert("saved")
         } catch (error) {
             console.log(error)
         }
@@ -76,32 +76,23 @@ export default class FoodSelection extends Component {
     render() {
         return (
             <Container>
-                {/* <View> */}
-                {/* <View style={styles.container}> */}
-                {/* <View style={styles.navBar}>
-                        <View style={styles.leftNav}>
-                            <Image source={require('../../assets/images/campfire.jpg')} style={{ width: 98, height: 100 }} />
-                        </View>
-                        <Text style={styles.navTitle}>KINDLER</Text>
-                    </View> */}
+                <ImageBackground
+                    style={{ width: '100%', height: '100%' }}
+                    source={require('../../assets/images/restuarant_2.jpg')}
+                >
 
-                {/* <View style={styles.body}> */}
-                {/* <View> */}
+                    <Text>THIS IS THE FOOD SELECTION SCREEN</Text>
+                    <Content>
+                        <CuisinePicker cuisine={this.state.cuisine} handleInput={this.handleInput} />
+                        <SortBy sortby={this.state.sortby} handleInput={this.handleInput} />
+                    </Content>
+                    <Button
+                        title="Next"
+                        onPress={this.SearchFoods}
+                        color="#666"
+                    />
 
-                {/* <Text>THIS IS THE FOOD SELECTION SCREEN</Text> */}
-                <Content>
-                    <CuisinePicker cuisine={this.state.cuisine} handleInput={this.handleInput} />
-                    <SortBy sortby={this.state.sortby} handleInput={this.handleInput} />
-                </Content>
-                <Button
-                                title="Next"
-                                onPress={this.SearchFoods}
-                                color="#666"
-                            />
-                {/* </View> */}
-                {/* </View> */}
-                {/* </View> */}
-                {/* </View> */}
+                </ImageBackground>
             </Container>
         );
     }
