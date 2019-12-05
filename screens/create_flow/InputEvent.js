@@ -19,7 +19,6 @@ import SportsSelection from '../../components/SportsSelection';
 import MusicSelection from '../../components/MusicSelection';
 import ArtsAndTheaterSelection from '../../components/Arts&TheaterSelection';
 
-// should this be a functional component or a class component? 
 export default class EventSelection extends React.Component {
   state = {
     date: '',
@@ -30,7 +29,13 @@ export default class EventSelection extends React.Component {
   getDate = async (key) => {
     try {
       const value = await AsyncStorage.getItem(key);
-      console.log(value)
+      console.log('Date we are retrieving:', value)
+
+      const dateData = moment(value).format('YYYY-MM-DD')
+      console.log("this is DATE DATA: ", dateData)
+      this.setState({date: dateData})
+
+      console.log("State of Date:", this.state.date)
     } catch (error) {
       console.log(error)
     }
@@ -40,6 +45,16 @@ export default class EventSelection extends React.Component {
     try {
       await AsyncStorage.setItem('eventData', JSON.stringify(data))
       console.log("the event data we saved", JSON.stringify(data))
+      alert("saved")
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  _storeEventClassification = async (data) => {
+    try {
+      await AsyncStorage.setItem('selectedEventType', JSON.stringify(data))
+      console.log("THE DATA WE SAVED: ", JSON.stringify(data))
       alert("saved")
     } catch (error) {
       console.log(error)
@@ -64,32 +79,36 @@ export default class EventSelection extends React.Component {
       .then(response => {
         console.log(this.state.classification)
         console.log(response)
+        this.setState({date: ''})
         this.props.navigation.navigate('Final')
         this._storeData(response)
       })
   }
 
+  // componentWillMount() {
+  //   this.setState({
+  //     date: moment(this.getDate('dateData')).format('YYYY-MM-DD')
+  //   }, ()=>console.log("DATE AFTER BEING 'SET': ", this.state.date))
+  // }
+
   componentWillMount() {
-    this.setState({
-      date: this.getDate('dateData')
-    })
-    console.log('DATE: ', this.state.date)
+      this.getDate('dateData')
   }
 
   handleInput = (value, name) => {
     console.log("value:", value)
     this.setState({
       [name]: value
-    }, console.log("name: ", name))
+    }, () => this._storeEventClassification(this.state.classification))
   }
 
   renderOne = () => {
     if (this.state.classification === "music") {
-      return <MusicSelection genre={this.state.musicselection} handleInput={this.handleInput} />
+      return <MusicSelection musicselection={this.state.musicselection} handleInput={this.handleInput} />
     } else if (this.state.classification === "sports") {
-      return <SportsSelection genre={this.state.sportselection} handleInput={this.handleInput} />
+      return <SportsSelection sportselection={this.state.sportselection} handleInput={this.handleInput} />
     } else if (this.state.classification === "arts&theater") {
-      return <ArtsAndTheaterSelection genre={this.state.artselection} handleInput={this.handleInput} />
+      return <ArtsAndTheaterSelection artselection={this.state.artselection} handleInput={this.handleInput} />
     }
     else { return }
   }
@@ -151,42 +170,3 @@ const styles = StyleSheet.create({
   }
 })
 
-
-
-{/* <View>
-
-  <ScrollView>
-
-    <View>
-      <Text>THIS IS THE EVENT SELECTION SCREEN</Text>
-
-      <EventCategorySelection classification={this.state.classification} handleInput={this.handleInput} />
-
-      <View>{this.renderOne()}</View>
-
-      <Button
-        title="Next"
-        onPress={this.SearchEvents}
-      />
-    </View>
-
-  </ScrollView>
-</View > */}
-//     );
-//   }
-// }
-
-// if(this.state.classification === "music"){
-//   return <MusicSelection musicselection={this.state.musicselection} handleInput={this.handleInput} />
-// }else if (this.state.classification === "sports"){
-//   return <Text><SportsSelection sportselection={this.state.sportselection} handleInput={this.handleInput} /></Text>
-// }else if (this.state.classification === "arts&theater"){
-//   return <Text><ArtsAndTheaterSelection artselection={this.state.artselection} handleInput={this.handleInput} /></Text>
-// }
-// else {return}
-
-{/* <SportsSelection sportselection={this.state.sportselection} handleInput={this.handleInput} /> */ }
-
-{/* <MusicSelection musicselection={this.state.musicselection} handleInput={this.handleInput} /> */ }
-
-{/* <ArtsAndTheaterSelection artselection={this.state.artselection} handleInput={this.handleInput} /> */ }

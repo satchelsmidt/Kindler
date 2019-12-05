@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, TextInput, KeyboardAvoidingView } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TextInput, KeyboardAvoidingView, Alert, AsyncStorage } from 'react-native';
 import Animated, { Easing } from 'react-native-reanimated';
 import { TapGestureHandler, State } from 'react-native-gesture-handler';
 import Svg, { Image, Circle, ClipPath } from 'react-native-svg';
 import * as Font from 'expo-font';
-
-
+import * as Google from 'expo-google-app-auth'
+import { NavigationActions } from 'react-navigation';
+import axios from 'axios'
 
 const { width, height } = Dimensions.get('window')
 const { Value, event, block, cond, eq, set, Clock, startClock, stopClock, debug, timing, clockRunning, interpolate, Extrapolate, concat } = Animated
@@ -39,16 +40,12 @@ function runTiming(clock, value, dest) {
     ]);
 }
 
-
 class LoginScreen extends Component {
     constructor() {
         super()
-
         this.state = {
             fontLoaded: false,
         };
-
-
 
         this.buttonOpacity = new Value(1)
 
@@ -115,6 +112,116 @@ class LoginScreen extends Component {
         this.setState({ fontLoaded: true });
     }
 
+    async setToken(user) {
+        try {
+            await AsyncStorage.setItem("userData", user)
+            console.log("storage success")
+        } catch (error) {
+            console.log("something went wrong: ", error)
+        }
+    }
+
+    _handleGoogleLogin = async () => {
+
+        try {
+
+            const result = await Google.logInAsync({
+                androidClientId: '220715676294-6sqt060756ji445a4ru0q10gkteamqbv.apps.googleusercontent.com',
+                iosClientId: '220715676294-o3v7hl5mj6l0rd4ubjvbfia9h02jb6hb.apps.googleusercontent.com',
+                scopes: ['profile', 'email'],
+            }).then(result => {
+
+                if (result.type === 'success') {
+                    Alert.alert(
+                        'Logged in!',
+                        `Hi ${result.user.name}!`,
+                    );
+                    const user_auth = result.user.id
+                    const user_name = result.user.name
+
+                    this.setToken((user_auth))
+                    console.log('Google Result:', result)
+
+                    /*=============================================
+                    =    User signup/login into mongodb          =
+                    =============================================*/
+                    // using the returned authID, check if the user exsists within the mongoDB
+                    axios.get(`https://obscure-springs-29928.herokuapp.com/date/find_user/${user_auth}`)
+                        .then(results => {
+                            // console.log(results.data)
+                            //if the user exsists, the result will contain all of the users date data
+                            //send over the userID to the date create section so we can store user dates
+                            if (results.data.length === 1) {
+                                //pass the data to the navigation (HomeScreen) 
+                                //nav to App?
+                                //all screens should be able to access the data throught 'props.navigation.(getParams?)'
+                                //results.data[0].dates
+                                this.props.navigation.navigate({
+                                    routeName: 'App',
+                                    action: NavigationActions.navigate({
+                                        routeName: 'Main',
+                                        action: NavigationActions.navigate({
+                                            routeName: 'Home',
+                                            params: { userData: results.data }
+                                        })
+                                    })
+                                })
+                            }
+                            else {
+                                //create new user, pass in auth providied by google 
+                                axios({
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Cache-Control': 'no-cache'
+                                    },
+                                    url: 'https://obscure-springs-29928.herokuapp.com/date/create_user',
+                                    data: {
+                                        name: user_name,
+                                        auth: user_auth
+                                    }
+                                })
+                                    .then(result => {
+                                        // console.log(result.data)
+                                        //nav to App?
+                                        //results.data[0].dates
+                                        this.props.navigation.navigate({
+                                            routeName: 'App',
+                                            action: NavigationActions.navigate({
+                                                routeName: 'Main',
+                                                action: NavigationActions.navigate({
+                                                    routeName: 'Home',
+                                                    params: { userData: results.data }
+                                                })
+                                            })
+                                        })
+                                    })
+                                    .catch(err => console.error(err))
+                            }
+                        })
+                        .catch(err => console.error(err))
+
+                    /*=====  End of User signup/login into mongodb  ======*/
+
+                    return result.accessToken;
+                } else {
+                    Alert.alert(
+                        'Cancelled!',
+                        'Login was cancelled!',
+                    );
+                    return { cancelled: true };
+                }
+            })
+        } catch (e) {
+            console.log("ERROR: ", e)
+            Alert.alert(
+                'Oops!',
+                'Login failed!',
+            );
+            return { error: true };
+        }
+    }
+
     render() {
         return (
             <KeyboardAvoidingView style={{ flex: 1, backgroundColor: 'black', color: 'white', justifyContent: 'flex-end' }} behavior="padding" enabled>
@@ -148,7 +255,7 @@ class LoginScreen extends Component {
                         <Animated.View style={{ ...styles.button, backgroundColor: 'rgba(222, 82, 70, 0.75)', opacity: this.buttonOpacity, transform: [{ translateY: this.buttonY }] }}>
                             <Text
                                 style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}
-                                onPress={() => this.props.loginHandler()}
+                                onPress={() => this._handleGoogleLogin()}
                             >SIGN IN WITH GOOGLE</Text>
                         </Animated.View>
                     </View>
@@ -192,7 +299,6 @@ class LoginScreen extends Component {
         )
     }
 }
-
 
 export default LoginScreen
 
