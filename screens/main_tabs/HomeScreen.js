@@ -29,11 +29,11 @@ export default class HomeScreen extends Component {
       // 'KaushanScript-Regular': require('../../assets/fonts/KaushanScript-Regular.otf'),
     });
 
-    //route to grab all date information a user has 
-    //TODO: Needs be passed the user ID upon login
+    //route to grab userID from login page
     const userData = this.props.navigation.getParam('userData', 'nothing')
     //assuming the data from the login screen wont get passed a 2nd time if we refresh this section 
     if (this.state.userID === '') {
+      // console.log(userData)
       this.setState({ userID: userData[0]._id })
     }
 
@@ -42,7 +42,6 @@ export default class HomeScreen extends Component {
       .then(result => {
 
         this.setState({ data: result.data[0].dates })
-        // console.log(result)
       }
       )
       .catch(err => console.error(err))

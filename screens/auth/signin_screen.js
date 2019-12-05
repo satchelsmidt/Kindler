@@ -4,12 +4,14 @@ import Animated, { Easing } from 'react-native-reanimated';
 import { TapGestureHandler, State } from 'react-native-gesture-handler';
 import Svg, { Image, Circle, ClipPath } from 'react-native-svg';
 import * as Font from 'expo-font';
-
+import { AppLoading } from 'expo';
 
 
 const { width, height } = Dimensions.get('window')
 const { Value, event, block, cond, eq, set, Clock, startClock, stopClock, debug, timing, clockRunning, interpolate, Extrapolate, concat } = Animated
 
+
+//animation handler
 function runTiming(clock, value, dest) {
     const state = {
         finished: new Value(0),
@@ -46,9 +48,14 @@ class LoginScreen extends Component {
 
         this.state = {
             fontLoaded: false,
+            isReady: false,
         };
 
 
+
+        /*=============================================
+        = This portion handles the screen animations  =
+        =============================================*/
 
         this.buttonOpacity = new Value(1)
 
@@ -108,14 +115,22 @@ class LoginScreen extends Component {
 
     }
 
+    /*=====  End of This portion handles the screen animations  ======*/
+
+    //attempting to load custom fonts (currently not working)
     async componentDidMount() {
         await Font.loadAsync({
-            Roboto: require('../../node_modules/native-base/Fonts/Roboto.ttf'),
+            'IndieFlower-Regular': require('../../assets/fonts/IndieFlower-Regular.ttf'),
         });
         this.setState({ fontLoaded: true });
+        this.setState({ isReady: true });
     }
 
     render() {
+        if (!this.state.isReady) {
+            return <AppLoading />;
+        }
+
         return (
             <KeyboardAvoidingView style={{ flex: 1, backgroundColor: 'black', color: 'white', justifyContent: 'flex-end' }} behavior="padding" enabled>
                 <View style={{
@@ -123,7 +138,7 @@ class LoginScreen extends Component {
                     backgroundColor: 'black',
                     justifyContent: 'flex-end'
                 }}>
-                    <View style={{ alignItems: 'center', paddingBottom: 175 }}><Text style={styles.title}>Kindler</Text></View>
+                    <View style={{ alignItems: 'center', paddingBottom: '75%' }}><Text style={styles.title}>Kindler</Text></View>
                     <Animated.View style={{ ...StyleSheet.absoluteFill, transform: [{ translateY: this.bgY }] }}>
                         <Svg height={height + 50} width={width}>
                             <ClipPath id='clip'>
@@ -214,6 +229,7 @@ const styles = StyleSheet.create({
         shadowColor: 'black',
         shadowOpacity: 0.2,
         elevation: 5,
+        fontFamily: 'IndieFlower-Regular',
     },
     closeButton: {
         height: 40,
@@ -241,12 +257,9 @@ const styles = StyleSheet.create({
         borderColor: 'rgba(0,0,0,0.2)'
     },
     title: {
-        // fontFamily: 'Roboto',
+        fontFamily: 'IndieFlower-Regular',
         color: 'white',
-        fontSize: 56,
-        // justifyContent: 'center',
+        fontSize: 80,
         zIndex: 2,
-        fontWeight: 'bold',
-
     }
 })

@@ -53,24 +53,6 @@ export default class GoogleSignIn extends Component {
     }
   }
 
-  // _storeData = async (data) =>{
-  //   try{
-  //     await AsyncStorage.setItem(data)
-  //   }catch(error){
-  //     console.log("you tried to save this data, but you have failed")
-  //   }
-  // }
-
-  // _getData = async (data)=>{
-  //   try{
-  //     let result = await AsyncStorage.getItem("result")
-  //     let data = JSON.stringify(result)
-  //     console.log(data)
-  //   } catch (error) {
-  //     console.log("something went wrong... ",  error)
-  //   }
-  // }
-
   _handleGoogleLogin = async () => {
     try {
       const result = await Google.logInAsync({
@@ -78,18 +60,14 @@ export default class GoogleSignIn extends Component {
         iosClientId: '220715676294-o3v7hl5mj6l0rd4ubjvbfia9h02jb6hb.apps.googleusercontent.com',
         scopes: ['profile', 'email'],
       });
-      // console.log('This is the result returned from google when logging in:', result)
       if (result.type === 'success') {
-        // console.log(result.user.id)
-        Alert.alert(
-          'Logged in!',
-          `Hi ${result.user.name}!`,
-        );
-        // this._storeData('result', JSON.stringify(result))
+        // Alert.alert(
+        //   'Logged in!',
+        //   `Hi ${result.user.name}!`,
+        // );
         const user_auth = result.user.id
         const user_name = result.user.name
 
-        // console.log(user_auth)
 
         // TODO: Store the googleId in localstorage using AsyncStorage
         // TODO: Make an API call that creates this user if they have not been created already
@@ -97,6 +75,7 @@ export default class GoogleSignIn extends Component {
         /*=============================================
         =    User signup/login into mongodb          =
         =============================================*/
+        // this.setState({ isReady: false })
         // using the returned authID, check if the user exsists within the mongoDB
         axios.get(`https://obscure-springs-29928.herokuapp.com/date/find_user/${user_auth}`)
           .then(results => {
@@ -108,6 +87,7 @@ export default class GoogleSignIn extends Component {
               //nav to App?
               //all screens should be able to access the data throught 'props.navigation.(getParams?)'
               //results.data[0].dates
+              // this.setState({ isReady: false })
               this.props.navigation.navigate({
                 routeName: 'App',
                 action: NavigationActions.navigate({
@@ -134,9 +114,7 @@ export default class GoogleSignIn extends Component {
                 }
               })
                 .then(result => {
-                  // console.log(result.data)
                   //nav to App?
-                  //results.data[0].dates
                   this.props.navigation.navigate({
                     routeName: 'App',
                     action: NavigationActions.navigate({
@@ -156,9 +134,6 @@ export default class GoogleSignIn extends Component {
 
         /*=====  End of User signup/login into mongodb  ======*/
 
-
-        // console.log('This is the same thing (google result) but JSON stringified: ', JSON.stringify(result.user))
-        // this.props.navigation.navigate('App')
         return result.accessToken;
       } else {
         Alert.alert(
@@ -190,30 +165,6 @@ export default class GoogleSignIn extends Component {
     }
 
     return (<LoginScreen loginHandler={this._handleGoogleLogin} />)
-
-
-    // return (
-
-    //   <Container>
-    //     <Header>
-    //       <Text style={styles.headerText}>Welcome to Kindler</Text>
-    //     </Header>
-    //     <Col style={{ backgroundColor: '#635DB7', height: 300 }}>
-    //       <View>
-    //         <Image
-    //           style={styles.container, { width: 250, height: 250 }}
-    //           source={require('../../assets/images/fire.jpg')}
-    //         />
-    //       </View>
-    //     </Col>
-    //     <View style={styles.container}>
-    //       <Button
-    //         title="Login with Google"
-    //         onPress={this._handleGoogleLogin}
-    //       />
-    //     </View>
-    //   </Container>
-    // );
   }
 }
 
