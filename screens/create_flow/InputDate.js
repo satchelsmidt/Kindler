@@ -4,7 +4,9 @@ import {
   View,
   Text,
   Button,
-  AsyncStorage
+  AsyncStorage,
+  StyleSheet,
+  ImageBackground
 } from 'react-native';
 import DatePicker from '../../components/DateSelection';
 import 'react-navigation';
@@ -19,8 +21,8 @@ export default class DateSelection extends Component {
   _storeData = async (data) => {
     try {
       await AsyncStorage.setItem("dateData", data)
-      console.log('saving: ', data)
-      alert("saved")
+      // console.log('saving: ', data)
+      // alert("saved")
     } catch (error) {
       console.log(error)
     }
@@ -35,29 +37,27 @@ export default class DateSelection extends Component {
     console.log('VALUE:', value)
     this.setState({
       [name]: value
-    }, ()=>console.log('date:', this.state.date))
+    }, () => console.log('date:', this.state.date))
   }
 
   render() {
     return (
-     
 
       <Container>
-         {/* <Header>
-           <Body>
-             <Title>Select a Date</Title>
-           </Body>
-         </Header> */}
-        <Content>
-          <DatePicker handleInput={this.handleInput} />
-        </Content>
-        <Button
-          title="Next"
-          // onPress={() => this.props.navigation.navigate('Food')}
-          onPress={this.submitDate}
-        />
+        <ImageBackground
+          style={{ width: '100%', height: '100%' }}
+          source={require('../../assets/images/stars_1.jpg')}
+        ><Text>Please Select a Date</Text>
+          <Content>
+            <DatePicker handleInput={this.handleInput} />
+          </Content>
+          <Button
+            title="Next"
+            onPress={this.submitDate}
+          />
+        </ImageBackground>
       </Container>
-
     );
   }
 }
+

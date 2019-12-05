@@ -6,7 +6,8 @@ import {
   Button,
   AsyncStorage,
   Image,
-  StyleSheet
+  StyleSheet,
+  ImageBackground
 } from 'react-native';
 import { Container, Content } from 'native-base';
 import GenrePicker from '../../components/GenreSelection';
@@ -22,7 +23,7 @@ export default class FoodSelection extends Component {
   _storeData = async (data) => {
     try {
       await AsyncStorage.setItem('movieData', JSON.stringify(data))
-      alert("saved")
+      // alert("saved")
     } catch (error) {
       console.log(error)
     }
@@ -46,31 +47,24 @@ export default class FoodSelection extends Component {
   render() {
     return (
       <Container>
-      {/* <View>
-        <ScrollView>
+        <ImageBackground
+          style={{ width: '100%', height: '100%' }}
+          source={require('../../assets/images/theater_1.jpg')}
+        >
+          <Text>THIS IS THE MOVIE SELECTION SCREEN</Text>
 
-          <View style={styles.container}>
-          <View style={styles.navBar}>
-            <View style={styles.leftNav}>
-            <Image source={require('../../assets/images/campfire.jpg')} style={{width:98, height:76}} />
-          </View>
-          </View> */}
-
-            {/* <Text>THIS IS THE MOVIE SELECTION SCREEN</Text> */}
-
-            <Content>
+          <Content>
             <GenrePicker genre=
-            {this.state.genre} handleInput=
-            {this.handleInput} />
-            </Content>
-            
-            <Button
-              title="Next"
-              onPress={this.SearchMovies}
-            />
-          {/* </View>
-        </ScrollView>
-      </View> */}
+              {this.state.genre} handleInput=
+              {this.handleInput} />
+          </Content>
+
+          <Button
+            title="Next"
+            onPress={this.SearchMovies}
+          />
+
+        </ImageBackground>
       </Container>
     );
   }
@@ -86,7 +80,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     flexDirection: 'row',
     justifyContent: 'space-around'
-  }, 
+  },
   leftNav: {
     flexDirection: 'row',
     padding: 20
