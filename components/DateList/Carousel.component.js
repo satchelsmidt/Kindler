@@ -13,7 +13,12 @@ export default class ImageCarousel extends Component {
             < View >
                 <Image
                     source={image}
-                    style={{ height: 200, width: 200, flex: 1 }} />
+                    style={{
+                        height: 200,
+                        width: 200,
+                        flex: 1,
+                        borderRadius: 40
+                    }} />
             </View >
         );
     }
@@ -24,7 +29,7 @@ export default class ImageCarousel extends Component {
                 ref={(c) => { this._carousel = c }}
                 data={this.props.entries}
                 renderItem={this._renderItem}
-                layout={'stack'}
+                layout={'default'}
                 layoutCardOffset={10}
                 sliderWidth={300}
                 itemWidth={200}
