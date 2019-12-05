@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Header, Content, DatePicker, Text } from 'native-base';
+import { Container, Header, Content, DatePicker, Text, Form, Item } from 'native-base';
 
 export default class DatePickerComponent extends Component {
 
@@ -19,9 +19,7 @@ export default class DatePickerComponent extends Component {
 
   render() {
     return (
-      <Container>
-        <Header />
-        <Content>
+        <Form>
           <DatePicker
             defaultDate={new Date()}
             locale={"en"}
@@ -38,8 +36,8 @@ export default class DatePickerComponent extends Component {
           <Text>
             Date: {this.state.chosenDate.toString().substr(4, 12)}
           </Text>
-        </Content>
-      </Container>
+        
+      </Form>
     );
   }
 }

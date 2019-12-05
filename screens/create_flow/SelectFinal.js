@@ -92,7 +92,6 @@ export default class DeckSwiperExample extends Component {
     this.setState({ restaurantData: '' })
     this.setState({ movieData: '' })
     this.setState({ eventData: '' })
-
     console.log('data sent to server')
     this.props.navigation.navigate('Home')
 

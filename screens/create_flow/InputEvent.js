@@ -4,10 +4,15 @@ import {
   View,
   Text,
   Button,
-  AsyncStorage
+  AsyncStorage,
+  Image,
+  StyleSheet,
+  MaskedViewIOS
 } from 'react-native';
+import { Container, Content } from 'native-base';
 import moment from 'moment';
 import 'react-navigation';
+// import MaskedViewIOS from '@react-native-community/masked-view';
 import axios from 'axios';
 import EventCategorySelection from '../../components/EventCategorySelection';
 import SportsSelection from '../../components/SportsSelection';
@@ -66,7 +71,7 @@ export default class EventSelection extends React.Component {
       },
       url: 'https://obscure-springs-29928.herokuapp.com/events/find_events',
       data: {
-        date: this.state.date,
+        date: moment(this.state.date).format('YYYY-MM-DD'),
         classification: this.state.classification,
         genre: this.state.genre
       }
@@ -113,21 +118,55 @@ export default class EventSelection extends React.Component {
       return false
     }
     return (
-      <View>
+      <Container>
+       {/* <View>
+         <ScrollView>
+         <View style={styles.container}>
+           <View style={styles.navBar}>
+             <View style={styles.leftNav}>
+            <Image source={require('../../assets/images/campfire.jpg')} style={{width:98, height:76}} />
+           </View>
+           </View> */}
+          
+         {/* <Text>THIS IS THE EVENT SELECTION SCREEN</Text> */}
 
-        <ScrollView>
-          <View>
-            <Text>THIS IS THE EVENT SELECTION SCREEN</Text>
-            <EventCategorySelection classification={this.state.classification} handleInput={this.handleInput} />
-            <View>{this.renderOne()}</View>
+        <Content>
+          <EventCategorySelection classification=
+          {this.state.classification} handleInput=
+          {this.handleInput} />
 
-            <Button
-              title="Next"
-              onPress={this.SearchEvents}
-            />
-          </View>
-        </ScrollView>
-      </View >
+          <View>{this.renderOne()}</View>
+
+          </Content>
+
+          <Button
+            title="Next"
+            onPress={this.SearchEvents}
+          />
+       {/* </View>
+
+      </ScrollView>
+      </View > */}
+      
+      </Container>
     );
   }
 }
+    
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
+  navBar: {
+    height: 55,
+    backgroundColor: 'red',
+    elevation: 3,
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  }, 
+  leftNav: {
+    flexDirection: 'row',
+    padding: 20
+  }
+})
+
