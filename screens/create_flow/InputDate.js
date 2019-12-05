@@ -25,7 +25,7 @@ export default class DateSelection extends Component {
     }
   }
 
-  submitDate =()=>{
+  submitDate = () => {
     this.props.navigation.navigate('Food')
     this._storeData(this.state.date)
   }
@@ -33,27 +33,22 @@ export default class DateSelection extends Component {
   handleInput = (value, name) => {
     console.log('VALUE:', value)
     this.setState({
-        [name]: value
-    })
-    console.log('date:', this.state.date)
-}
+      [name]: value
+    }, ()=>console.log('date:', this.state.date))
+  }
 
   render() {
     return (
       <View>
-
         <ScrollView>
-
-          <View>
+          <View style={{ flex: 1 }}>
             <Text>THIS IS THE DATE SELECTION SCREEN</Text>
-            <DatePicker handleInput={this.handleInput}/>
+            <DatePicker handleInput={this.handleInput} />
             <Button
               title="Next"
-              // onPress={() => this.props.navigation.navigate('Food')}
               onPress={this.submitDate}
             />
           </View>
-
         </ScrollView>
       </View>
     );
