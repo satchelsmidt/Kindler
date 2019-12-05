@@ -4,6 +4,7 @@ import Animated, { Easing } from 'react-native-reanimated';
 import { TapGestureHandler, State } from 'react-native-gesture-handler';
 import Svg, { Image, Circle, ClipPath } from 'react-native-svg';
 import * as Font from 'expo-font';
+import { AppLoading } from 'expo'
 import * as Google from 'expo-google-app-auth'
 import { NavigationActions } from 'react-navigation';
 import axios from 'axios'
@@ -115,8 +116,8 @@ class LoginScreen extends Component {
         await Font.loadAsync({
             'IndieFlower-Regular': require('../../assets/fonts/IndieFlower-Regular.ttf'),
         });
-        this.setState({ fontLoaded: true });
-        this.setState({ isReady: true });
+        this.setState({ fontLoaded: true, isReady: true });
+        // this.setState({});
     }
 
     async setToken(user) {
@@ -232,82 +233,84 @@ class LoginScreen extends Component {
     render() {
         if (!this.state.isReady) {
             return <AppLoading />;
-        }
+        } else {
 
-        return (
-            <KeyboardAvoidingView style={{ flex: 1, backgroundColor: 'black', color: 'white', justifyContent: 'flex-end' }} behavior="padding" enabled>
-                <View style={{
-                    flex: 1,
-                    backgroundColor: 'black',
-                    justifyContent: 'flex-end'
-                }}>
-                    <View style={{ alignItems: 'center', paddingBottom: '75%' }}><Text style={styles.title}>Kindler</Text></View>
-                    <Animated.View style={{ ...StyleSheet.absoluteFill, transform: [{ translateY: this.bgY }] }}>
-                        <Svg height={height + 50} width={width}>
-                            <ClipPath id='clip'>
-                                <Circle r={height + 50} cx={width / 2} />
-                            </ClipPath>
-                            <Image
-                                href={require('../../assets/images/login_campfire.jpg')}
-                                width={width}
-                                height={height + 50}
-                                preserveAspectRatio='xMidYMid slice'
-                                clipPath='url(#clip)'
+            return (
+                <KeyboardAvoidingView style={{ flex: 1, backgroundColor: 'black', color: 'white', justifyContent: 'flex-end' }} behavior="padding" enabled>
+                    <View style={{
+                        flex: 1,
+                        backgroundColor: 'black',
+                        justifyContent: 'flex-end'
+                    }}>
+                        <View style={{ alignItems: 'center', paddingBottom: '75%' }}><Text style={styles.title}>Kindler</Text></View>
+                        <Animated.View style={{ ...StyleSheet.absoluteFill, transform: [{ translateY: this.bgY }] }}>
+                            <Svg height={height + 50} width={width}>
+                                <ClipPath id='clip'>
+                                    <Circle r={height + 50} cx={width / 2} />
+                                </ClipPath>
+                                <Image
+                                    href={require('../../assets/images/login_campfire.jpg')}
+                                    width={width}
+                                    height={height + 50}
+                                    preserveAspectRatio='xMidYMid slice'
+                                    clipPath='url(#clip)'
+                                />
+                            </Svg>
+                        </Animated.View>
+                        <View style={{ height: height / 3, justifyContent: 'center' }}>
+                            <TapGestureHandler onHandlerStateChange={this.onStateChange}>
+                                <Animated.View
+                                    style={{ ...styles.button, opacity: this.buttonOpacity, transform: [{ translateY: this.buttonY }] }}>
+                                    <Text style={{ fontSize: 20, fontWeight: 'bold' }}>SIGN IN</Text>
+                                </Animated.View>
+                            </TapGestureHandler>
+                            <Animated.View style={{ ...styles.button, backgroundColor: 'rgba(222, 82, 70, 0.75)', opacity: this.buttonOpacity, transform: [{ translateY: this.buttonY }] }}>
+                                <Text
+                                    style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}
+                                    onPress={() => this._handleGoogleLogin()}
+                                >SIGN IN WITH GOOGLE</Text>
+                            </Animated.View>
+                        </View>
+                        <Animated.View style={{
+                            zIndex: this.textInputZindex,
+                            opacity: this.textInputOpacity,
+                            transform: [{ translateY: this.textInputY }],
+                            height: height / 3,
+                            ...StyleSheet.absoluteFill,
+                            top: null,
+                            justifyContent: 'center'
+                        }}>
+
+                            <TapGestureHandler onHandlerStateChange={this.onCloseState}>
+                                <Animated.View style={styles.closeButton}>
+                                    <Animated.Text style={{
+                                        fontSize: 15,
+                                        transform: [{
+                                            rotate: concat(this.rotateCross, 'deg')
+                                        }]
+                                    }}>X</Animated.Text>
+                                </Animated.View>
+                            </TapGestureHandler>
+
+                            <TextInput
+                                placeholder="EMAIL"
+                                style={styles.textInput}
+                                placeholderTextColor='white'
                             />
-                        </Svg>
-                    </Animated.View>
-                    <View style={{ height: height / 3, justifyContent: 'center' }}>
-                        <TapGestureHandler onHandlerStateChange={this.onStateChange}>
-                            <Animated.View
-                                style={{ ...styles.button, opacity: this.buttonOpacity, transform: [{ translateY: this.buttonY }] }}>
+                            <TextInput
+                                placeholder="PASSWORD"
+                                style={styles.textInput}
+                                placeholderTextColor='white'
+                            />
+                            <Animated.View style={styles.button}>
                                 <Text style={{ fontSize: 20, fontWeight: 'bold' }}>SIGN IN</Text>
                             </Animated.View>
-                        </TapGestureHandler>
-                        <Animated.View style={{ ...styles.button, backgroundColor: 'rgba(222, 82, 70, 0.75)', opacity: this.buttonOpacity, transform: [{ translateY: this.buttonY }] }}>
-                            <Text
-                                style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}
-                                onPress={() => this._handleGoogleLogin()}
-                            >SIGN IN WITH GOOGLE</Text>
                         </Animated.View>
-                    </View>
-                    <Animated.View style={{
-                        zIndex: this.textInputZindex,
-                        opacity: this.textInputOpacity,
-                        transform: [{ translateY: this.textInputY }],
-                        height: height / 3,
-                        ...StyleSheet.absoluteFill,
-                        top: null,
-                        justifyContent: 'center'
-                    }}>
+                    </View >
+                </KeyboardAvoidingView>
 
-                        <TapGestureHandler onHandlerStateChange={this.onCloseState}>
-                            <Animated.View style={styles.closeButton}>
-                                <Animated.Text style={{
-                                    fontSize: 15,
-                                    transform: [{
-                                        rotate: concat(this.rotateCross, 'deg')
-                                    }]
-                                }}>X</Animated.Text>
-                            </Animated.View>
-                        </TapGestureHandler>
-
-                        <TextInput
-                            placeholder="EMAIL"
-                            style={styles.textInput}
-                            placeholderTextColor='white'
-                        />
-                        <TextInput
-                            placeholder="PASSWORD"
-                            style={styles.textInput}
-                            placeholderTextColor='white'
-                        />
-                        <Animated.View style={styles.button}>
-                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>SIGN IN</Text>
-                        </Animated.View>
-                    </Animated.View>
-                </View >
-            </KeyboardAvoidingView>
-        )
+            )
+        }
     }
 }
 
@@ -331,7 +334,7 @@ const styles = StyleSheet.create({
         shadowColor: 'black',
         shadowOpacity: 0.2,
         elevation: 5,
-        fontFamily: 'IndieFlower-Regular',
+        // fontFamily: 'IndieFlower-Regular',
     },
     closeButton: {
         height: 40,
