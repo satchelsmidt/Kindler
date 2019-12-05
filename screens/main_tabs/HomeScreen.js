@@ -38,7 +38,10 @@ export default class HomeScreen extends Component {
     }
 
 
-    axios.get(`https://obscure-springs-29928.herokuapp.com/date/all_dates/${this.state.userID}`)
+    // axios.get(`https://obscure-springs-29928.herokuapp.com/date/all_dates/${this.state.userID}`)
+    axios.get('https://obscure-springs-29928.herokuapp.com/date/all_dates/5dd625cd294dd35110a02b74')
+
+  
       .then(result => {
 
         this.setState({ data: result.data[0].dates })

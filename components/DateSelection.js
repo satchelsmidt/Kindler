@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Header, Content, DatePicker, Text } from 'native-base';
+import { Container, Header, Content, DatePicker, Text, Form, Item } from 'native-base';
 
 export default class DatePickerComponent extends Component {
   constructor(props) {
@@ -20,9 +20,10 @@ export default class DatePickerComponent extends Component {
     return (
       // <Container style={{width:100}, {height:200}}>
       // <Container style={{flex:1}}>
-      <Container>
-        <Header />
-        <Content>
+     
+        // <Header />
+        
+        <Form>
           <DatePicker
             defaultDate={new Date()}
             // minimumDate={new Date(2018, 1, 1)}
@@ -43,8 +44,8 @@ export default class DatePickerComponent extends Component {
           <Text>
             Date: {this.state.chosenDate.toString().substr(4, 12)}
           </Text>
-        </Content>
-      </Container>
+        
+      </Form>
     );
   }
 }

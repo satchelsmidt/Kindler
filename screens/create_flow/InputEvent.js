@@ -4,10 +4,15 @@ import {
   View,
   Text,
   Button,
-  AsyncStorage
+  AsyncStorage,
+  Image,
+  StyleSheet,
+  MaskedViewIOS
 } from 'react-native';
+import { Container, Content } from 'native-base';
 import moment from 'moment';
 import 'react-navigation';
+// import MaskedViewIOS from '@react-native-community/masked-view';
 import axios from 'axios';
 import EventCategorySelection from '../../components/EventCategorySelection';
 import SportsSelection from '../../components/SportsSelection';
@@ -36,11 +41,10 @@ export default class EventSelection extends React.Component {
       await AsyncStorage.setItem('eventData', JSON.stringify(data))
       console.log("the event data we saved", JSON.stringify(data))
       alert("saved")
-    }catch(error){
-    console.log(error)
+    } catch (error) {
+      console.log(error)
     }
   }
-
 
   SearchEvents = () => {
 
@@ -52,12 +56,12 @@ export default class EventSelection extends React.Component {
       },
       url: 'https://obscure-springs-29928.herokuapp.com/events/find_events',
       data: {
-        date: moment(this.state.date).format('YYYY-MM-DD') ,
+        date: moment(this.state.date).format('YYYY-MM-DD'),
         classification: this.state.classification,
         genre: this.state.genre
       }
     })
-      .then(response => { 
+      .then(response => {
         console.log(this.state.classification)
         console.log(response)
         this.props.navigation.navigate('Final')
@@ -77,12 +81,6 @@ export default class EventSelection extends React.Component {
     this.setState({
       [name]: value
     }, console.log("name: ", name))
-
-    // console.log to make sure it works!
-    // console.log('here is the selection: ', this.state.sportselection)
-    console.log('here is the classification: ', this.state.classification)
-    // console.log('here is the music selection: ', this.state.musicselection)
-    // console.log('here is the selection: ', this.state.artselection)
   }
 
   renderOne = () => {
@@ -101,28 +99,82 @@ export default class EventSelection extends React.Component {
       return false
     }
     return (
-      <View>
+      <Container>
+       {/* <View>
+         <ScrollView>
+         <View style={styles.container}>
+           <View style={styles.navBar}>
+             <View style={styles.leftNav}>
+            <Image source={require('../../assets/images/campfire.jpg')} style={{width:98, height:76}} />
+           </View>
+           </View> */}
+          
+         {/* <Text>THIS IS THE EVENT SELECTION SCREEN</Text> */}
 
-        <ScrollView>
+        <Content>
+          <EventCategorySelection classification=
+          {this.state.classification} handleInput=
+          {this.handleInput} />
 
-          <View>
-            <Text>THIS IS THE EVENT SELECTION SCREEN</Text>
+          <View>{this.renderOne()}</View>
 
-            <EventCategorySelection classification={this.state.classification} handleInput={this.handleInput} />
+          </Content>
 
-            <View>{this.renderOne()}</View>
+          <Button
+            title="Next"
+            onPress={this.SearchEvents}
+          />
+       {/* </View>
 
-            <Button
-              title="Next"
-              onPress={this.SearchEvents}
-            />
-          </View>
-
-        </ScrollView>
-      </View >
+      </ScrollView>
+      </View > */}
+      
+      </Container>
     );
   }
 }
+    
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
+  navBar: {
+    height: 55,
+    backgroundColor: 'red',
+    elevation: 3,
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  }, 
+  leftNav: {
+    flexDirection: 'row',
+    padding: 20
+  }
+})
+
+
+
+{/* <View>
+
+  <ScrollView>
+
+    <View>
+      <Text>THIS IS THE EVENT SELECTION SCREEN</Text>
+
+      <EventCategorySelection classification={this.state.classification} handleInput={this.handleInput} />
+
+      <View>{this.renderOne()}</View>
+
+      <Button
+        title="Next"
+        onPress={this.SearchEvents}
+      />
+    </View>
+
+  </ScrollView>
+</View > */}
+//     );
+//   }
+// }
 
 // if(this.state.classification === "music"){
 //   return <MusicSelection musicselection={this.state.musicselection} handleInput={this.handleInput} />
