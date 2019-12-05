@@ -35,7 +35,7 @@ export default class DateItemDetailsScreen extends Component {
 
             let poster = { uri: data.poster }
             let stockMovieImage = require("../../assets/images/popin'corn.jpg")
-
+            console.log(data.rating)
             return <Card
                 stock={stockMovieImage}
                 title={data.name}

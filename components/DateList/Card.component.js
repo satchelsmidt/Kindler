@@ -41,7 +41,7 @@ export default class Cards extends Component {
             return <CardItem header style={styles.card2}>
                 <Body>
                     {/* <Text>{this.props.title}</Text> */}
-                    <Text style={{ color: 'white', fontWeight: 'bold' }}>{this.props.info}</Text>
+                    <Text style={{ color: 'black', fontWeight: 'bold' }}>{this.props.info}</Text>
                     <Text note style={{ color: 'white' }}>T: {this.props.time}</Text>
                     <Text note style={{ color: 'white' }}>P: {this.props.phone}</Text>
                     <Right>
@@ -119,10 +119,20 @@ export default class Cards extends Component {
         }
         //render the information for a movie 
         else {
-            return <CardItem header>
+            return <CardItem header style={styles.card2}>
                 <Body>
-                    <Text>{this.state.theaterName}</Text>
+                    <Text style={{ fontWeight: 'bold' }}>{this.state.theaterName}</Text>
                     <Text note>{this.state.theaterAddress}</Text>
+                    <View style={{
+                        flexDirection: 'row',
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginTop: '2%',
+                        marginHorizontal: '25%',
+                    }}>
+                        {this.renderTicketInfo()}
+                    </View>
                 </Body>
             </CardItem>
         }
@@ -150,14 +160,7 @@ export default class Cards extends Component {
                 activeTabStyle={{ backgroundColor: '#c4a494' }}>
                 <Card transparent>
                     {this.renderTicketSalesHeader()}
-                    <View style={{
-                        flexDirection: 'row',
-                        flex: 1,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}>
-                        {this.renderTicketInfo()}
-                    </View>
+
                 </Card>
             </Tab>
         }
@@ -179,17 +182,18 @@ export default class Cards extends Component {
 
     render() {
 
+
         return (
             <Container>
                 <Content>
                     <Content style={{ backgroundColor: '#a9adb7' }}>
-                        <Card transparent style={{ backgroundColor: '#a9adb7' }}>
-                            <CardItem style={{ ...styles.card, backgroundColor: '#a9adb7' }}>
+                        <Card transparent>
+                            <CardItem style={styles.card}>
                                 <Left>
                                     <Thumbnail source={this.props.stock} />
                                     <Body>
                                         <Text style={{ fontWeight: 'bold' }}>{this.props.title}</Text>
-                                        <Text note style={{ color: 'white' }}>{this.props.date}</Text>
+                                        <Text note style={{ color: 'grey' }}>{this.props.date}</Text>
                                     </Body>
                                     {
                                         this.props.rating ? <Text style={styles.header}> Rating: {this.props.rating} </Text> : <Text></Text>
@@ -201,8 +205,9 @@ export default class Cards extends Component {
                                         style={styles.rating} />
                                 </Left>
                             </CardItem>
+                            {/* image here */}
                             <CardItem style={{ backgroundColor: '#a9adb7' }}>
-                                <Body style={{ alignItems: 'center' , backgroundColor: '#a9adb7'}}>
+                                <Body style={{ alignItems: 'center', backgroundColor: '#a9adb7' }}>
                                     {this.renderCarousel(this.props)}
                                 </Body>
                             </CardItem>
@@ -226,7 +231,7 @@ export default class Cards extends Component {
 const styles = StyleSheet.create({
     header: {
         fontWeight: 'bold',
-        color: 'white',
+        color: 'black',
     },
     headerBox: {
         borderBottomColor: 'rgba(232, 232, 232, 1)',
@@ -239,9 +244,11 @@ const styles = StyleSheet.create({
         height: 0
     },
     card: {
-        backgroundColor: '#a9adb7',
+        // backgroundColor: '#a9adb7',
         marginHorizontal: 20,
-        borderRadius: 35,
+        // borderRadius: 35,
+        borderTopRightRadius: 70,
+        borderBottomLeftRadius: 70
     },
     card2: {
         backgroundColor: '#c4a494',
@@ -250,7 +257,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 2, height: 2 },
         shadowColor: 'black',
         shadowOpacity: 0.2,
-        elevation: 3,
+        elevation: 3
     },
     mainIcon: {
         backgroundColor: '#13ff8a',
