@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import DatePicker from '../../components/DateSelection';
 import 'react-navigation';
+import { Container, Content, Header, Body, Title } from 'native-base';
 
 export default class DateSelection extends Component {
 
@@ -39,18 +40,24 @@ export default class DateSelection extends Component {
 
   render() {
     return (
-      <View>
-        <ScrollView>
-          <View style={{ flex: 1 }}>
-            <Text>THIS IS THE DATE SELECTION SCREEN</Text>
-            <DatePicker handleInput={this.handleInput} />
-            <Button
-              title="Next"
-              onPress={this.submitDate}
-            />
-          </View>
-        </ScrollView>
-      </View>
+     
+
+      <Container>
+         {/* <Header>
+           <Body>
+             <Title>Select a Date</Title>
+           </Body>
+         </Header> */}
+        <Content>
+          <DatePicker handleInput={this.handleInput} />
+        </Content>
+        <Button
+          title="Next"
+          // onPress={() => this.props.navigation.navigate('Food')}
+          onPress={this.submitDate}
+        />
+      </Container>
+
     );
   }
 }

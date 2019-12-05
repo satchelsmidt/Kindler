@@ -4,11 +4,16 @@ import {
     View,
     Text,
     Button,
-    AsyncStorage
+    AsyncStorage,
+    Image,
+    StyleSheet,
+    MaskedViewIOS,
+    // Container
 } from 'react-native';
 import CuisinePicker from '../../components/FoodSelection';
 import SortBy from '../../components/FilterSelection'
 import 'react-navigation';
+import { Container, Content } from 'native-base';
 const axios = require('axios')
 
 export default class FoodSelection extends Component {
@@ -70,19 +75,60 @@ export default class FoodSelection extends Component {
 
     render() {
         return (
-            <View>
-                <ScrollView>
-                    <View>
-                        <Text>THIS IS THE FOOD SELECTION SCREEN</Text>
-                        <CuisinePicker cuisine={this.state.cuisine} handleInput={this.handleInput} />
-                        <SortBy sortby={this.state.sortby} handleInput={this.handleInput} />
-                        <Button
-                            title="Next"
-                            onPress={this.SearchFoods}
-                        />
-                    </View>
-                </ScrollView>
-            </View>
+            <Container>
+                {/* <View> */}
+                {/* <View style={styles.container}> */}
+                {/* <View style={styles.navBar}>
+                        <View style={styles.leftNav}>
+                            <Image source={require('../../assets/images/campfire.jpg')} style={{ width: 98, height: 100 }} />
+                        </View>
+                        <Text style={styles.navTitle}>KINDLER</Text>
+                    </View> */}
+
+                {/* <View style={styles.body}> */}
+                {/* <View> */}
+
+                {/* <Text>THIS IS THE FOOD SELECTION SCREEN</Text> */}
+                <Content>
+                    <CuisinePicker cuisine={this.state.cuisine} handleInput={this.handleInput} />
+                    <SortBy sortby={this.state.sortby} handleInput={this.handleInput} />
+                </Content>
+                <Button
+                                title="Next"
+                                onPress={this.SearchFoods}
+                                color="#666"
+                            />
+                {/* </View> */}
+                {/* </View> */}
+                {/* </View> */}
+                {/* </View> */}
+            </Container>
         );
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    },
+    navBar: {
+        height: 110,
+        backgroundColor: '#f4871e',
+        elevation: 3,
+        flexDirection: 'row',
+    },
+    leftNav: {
+        flexDirection: 'row',
+        paddingBottom: 20
+    },
+    navTitle: {
+        marginLeft: 25,
+        fontSize: 30,
+        alignContent: 'center',
+        color: 'white'
+    },
+    body: {
+        flex: 1,
+        backgroundColor: 'red'
+    }
+})
