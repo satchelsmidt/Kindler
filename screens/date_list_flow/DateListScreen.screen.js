@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Container, Content } from 'native-base';
-import { View, Text, RefreshControl, SafeAreaView } from 'react-native';
+import { View, Text, RefreshControl, SafeAreaView, Image } from 'react-native';
 import ListOfItems from "../../components/DateList/List.component";
 import Constants from 'expo-constants';
 
@@ -33,9 +33,17 @@ export default class DatesScreen extends Component {
     }
 
     noDates() {
+
+        let img = require('../../assets/images/images.png')
+        let test = { uri: 'https://media.giphy.com/media/Mp0BJWd9nC5Y4/source.gif' }
         return (
-            <View style={{ alignContent: 'center', justifyContent: 'center', alignItems: 'center' }}>
-                <Text>You have no Dates...</Text>
+            <View style={{ alignItems: 'center', justifyContent: 'center', alignItems: 'center' }}>
+                {/* <Text>You have no Dates...</Text> */}
+                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <Image source={test}
+                        style={{ width: 250, height: 300, justifyContent: 'center', alignItems: 'center', marginTop: '40%' }}
+                    />
+                </View>
             </View>
         )
     }

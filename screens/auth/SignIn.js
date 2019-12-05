@@ -71,7 +71,7 @@ export default class GoogleSignIn extends Component {
     return (
       <View>
         {!isReady && !isAuthenticated ?
-          <ActivityIndicator size="large" color="#0000ff" />
+          <ActivityIndicator size="large" color="#0000ff" style={{ justifyContent: 'center', alignItems: 'center' }} />
           : isAuthenticated && isReady ? this.goToHomeScreen() : this.goToLoginScreen()}
       </View>
     )

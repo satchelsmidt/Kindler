@@ -42,13 +42,16 @@ const styles = StyleSheet.create({
         // backgroundColor: '#13ff8a',
         width: 50,
         height: 50,
-        borderRadius: 50 / 2,
+        borderRadius: 30,
         justifyContent: 'center',
         alignItems: 'center',
         shadowOffset: { width: 2, height: 2 },
         shadowColor: 'black',
         shadowOpacity: 0.2,
-        elevation: 5
+        elevation: 5,
+        opacity: 0.9,
+        borderTopRightRadius: 70,
+        borderBottomLeftRadius: 70
         // zIndex: -1,
     },
     subIcon: {
@@ -64,6 +67,9 @@ const styles = StyleSheet.create({
     card: {
         marginHorizontal: 20,
         borderRadius: 35,
+        opacity: 0.8,
+        borderTopRightRadius: 70,
+        borderBottomLeftRadius: 70
         // backgroundColor: 
     },
     img: {
