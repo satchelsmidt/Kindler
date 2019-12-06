@@ -242,7 +242,7 @@ class LoginScreen extends Component {
                         backgroundColor: 'black',
                         justifyContent: 'flex-end'
                     }}>
-                        <View style={{ alignItems: 'center', paddingBottom: '75%' }}><Text style={styles.title}>Kindler</Text></View>
+                        <Text style={styles.title}>Kindler</Text>
                         <Animated.View style={{ ...StyleSheet.absoluteFill, transform: [{ translateY: this.bgY }] }}>
                             <Svg height={height + 50} width={width}>
                                 <ClipPath id='clip'>
@@ -366,5 +366,8 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 80,
         zIndex: 2,
+        alignSelf: 'center',
+        justifyContent: 'center',
+        paddingBottom: '75%'
     }
 })
