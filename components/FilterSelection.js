@@ -13,6 +13,8 @@ export default class SortBy extends Component {
                             // note
                             mode="dropdown"
                             style={{ width: 300 }}
+                            textStyle={{ color: "white" }}
+                            placeHolderTextStyle={{ color: "white" }}
                             placeholder="Sort by..."
                             selectedValue={this.props.sortby}
                             onValueChange={(value) => this.props.handleInput(value, 'sortby')}

@@ -34,11 +34,9 @@ export default class DatesScreen extends Component {
 
     noDates() {
 
-        let img = require('../../assets/images/images.png')
         let test = { uri: 'https://media.giphy.com/media/Mp0BJWd9nC5Y4/source.gif' }
         return (
             <View style={{ alignItems: 'center', justifyContent: 'center', alignItems: 'center' }}>
-                {/* <Text>You have no Dates...</Text> */}
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                     <Image source={test}
                         style={{ width: 250, height: 300, justifyContent: 'center', alignItems: 'center', marginTop: '40%' }}
@@ -74,7 +72,7 @@ export default class DatesScreen extends Component {
 
 
         return (
-            <Container>
+            <Container style={{backgroundColor: 'black'}}>
                 <Content
                     // contentContainerStyle={styles.scrollView}
                     refreshControl={

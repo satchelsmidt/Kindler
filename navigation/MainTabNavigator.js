@@ -76,6 +76,10 @@ const ProfileStack = createStackNavigator(
 
 ProfileStack.navigationOptions = {
   header: null,
+  headerMode: 'none',
+  navigationOptions: {
+    headerVisible: false,
+  },
   tabBarLabel: 'Profile',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-person' : 'md-person'} />

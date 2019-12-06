@@ -7,24 +7,22 @@ let ListOfItems = props => {
     return (
 
         <List>
-            <Card style={{...styles.card, backgroundColor: props.colorChange2}}>
-                <ListItem thumbnail>
-                    <Left>
+            <Card style={{ ...styles.card, backgroundColor: props.colorChange2 }}>
+                <ListItem thumbnail containerStyle={{ borderBottomColor: 'transparent', borderBottomWidth: 0 }} style={{ borderBottomWidth: 0, borderBottomColor: 'transparent' }}>
+                    <Left style={{ borderBottomWidth: 0, borderBottomColor: 'transparent' }}>
                         <Thumbnail circle
                             source={props.pic}
                             style={styles.img}
                         />
                     </Left>
-                    <Body>
+                    <Body style={{ borderBottomWidth: 0, borderBottomColor: 'transparent' }}>
                         <Text numberOfLines={1} style={{ fontWeight: 'bold' }}>{props.title}</Text>
                         <Text note numberOfLines={2} style={{ color: 'white' }}>{props.description} </Text>
                     </Body>
-                    <Right>
+                    <Right style={{ borderBottomWidth: 0, borderBottomColor: 'transparent' }}>
                         <View style={{ ...styles.mainIcon, backgroundColor: props.colorChange }}>
                             <Button onPress={props.nav} transparent>
-                                {/* <Text>View</Text> */}
                                 <Icon type={props.type} name={props.icon} style={{ ...styles.subIcon, fontSize: props.iconSize }} />
-                                {/* <Icon ios='arrow-right-circle' android="rightcircleo" style={{ fontSize: 35 }} /> */}
                             </Button>
                         </View>
                     </Right>

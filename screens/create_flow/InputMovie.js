@@ -3,13 +3,13 @@ import {
   ScrollView,
   View,
   Text,
-  Button,
+  // Button,
   AsyncStorage,
   Image,
   StyleSheet,
   ImageBackground
 } from 'react-native';
-import { Container, Content } from 'native-base';
+import { Container, Content, Button, Body } from 'native-base';
 import GenrePicker from '../../components/GenreSelection';
 import 'react-navigation';
 const axios = require('axios')
@@ -18,6 +18,19 @@ export default class FoodSelection extends Component {
 
   state = {
     genre: ''
+  }
+  static navigationOptions = {
+    headerStyle: {
+      // backgroundColor: 'rgba(128,128,128, 0.2)',
+      // headerTintColor: 'white'
+    },
+    title: 'Select a movie option!',
+    headerTransparent: true,
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+
   }
 
   _storeData = async (data) => {
@@ -49,23 +62,29 @@ export default class FoodSelection extends Component {
       <Container>
         <ImageBackground
           style={{ width: '100%', height: '100%' }}
-          source={require('../../assets/images/theater_1.jpg')}
+          source={require('../../assets/images/theater.jpg')}
         >
-          <Text>THIS IS THE MOVIE SELECTION SCREEN</Text>
-
-          <Content>
-            <GenrePicker genre=
-              {this.state.genre} handleInput=
-              {this.handleInput} />
-          </Content>
-
-          <Button
-            title="Next"
-            onPress={this.SearchMovies}
-          />
-
+          <Body style={styles.dateSel}>
+            <Content>
+              <GenrePicker genre=
+                {this.state.genre} handleInput=
+                {this.handleInput} />
+            </Content>
+          </Body>
+          <Body style={{ height: '3%' }}>
+            {/* <Text></Text> */}
+          </Body>
+          <View style={styles.button}>
+            <Button
+              transparent
+              light
+              onPress={this.SearchMovies}
+            >
+              <Text style={styles.buttonTxt}>Next</Text>
+            </Button>
+          </View>
         </ImageBackground>
-      </Container>
+      </Container >
     );
   }
 }
@@ -84,5 +103,35 @@ const styles = StyleSheet.create({
   leftNav: {
     flexDirection: 'row',
     padding: 20
+  },
+  button: {
+    backgroundColor: '#FD6051',
+    height: 70,
+    marginHorizontal: 20,
+    borderRadius: 35,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 5,
+    shadowOffset: { width: 2, height: 2 },
+    shadowColor: 'black',
+    shadowOpacity: 0.2,
+    elevation: 5,
+    opacity: 0.8
+    // fontFamily: 'IndieFlower-Regular',
+  },
+  dateSel: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: '45%',
+    backgroundColor: 'white',
+    paddingBottom: 1,
+    height: 10,
+    opacity: 0.8,
+    borderRadius: 40
+  },
+  buttonTxt: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white'
   }
 })

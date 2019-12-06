@@ -3,17 +3,17 @@ import {
     ScrollView,
     View,
     Text,
-    Button,
+    // Button,
     AsyncStorage,
     Image,
     StyleSheet,
     MaskedViewIOS,
-    ImageBackground
+    ImageBackground,
 } from 'react-native';
 import CuisinePicker from '../../components/FoodSelection';
 import SortBy from '../../components/FilterSelection'
 import 'react-navigation';
-import { Container, Content } from 'native-base';
+import { Container, Content, Body, Button } from 'native-base';
 const axios = require('axios')
 
 export default class FoodSelection extends Component {
@@ -21,6 +21,21 @@ export default class FoodSelection extends Component {
     state = {
         cuisine: '',
         sortby: '',
+    }
+
+
+    static navigationOptions = {
+        headerStyle: {
+            // backgroundColor: 'rgba(128,128,128, 0.2)',
+            // headerTintColor: 'white'
+        },
+        title: 'Select some food options!',
+        headerTransparent: true,
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+        
     }
 
     _storeData = async (data) => {
@@ -78,48 +93,70 @@ export default class FoodSelection extends Component {
             <Container>
                 <ImageBackground
                     style={{ width: '100%', height: '100%' }}
-                    source={require('../../assets/images/restuarant_2.jpg')}
+                    source={require('../../assets/images/eatppl.jpg')}
                 >
+                    <Body style={styles.dateSel}>
+                        <Content style={{
+                            // height: 5, paddingBottom: 5,
 
-                    <Text>THIS IS THE FOOD SELECTION SCREEN</Text>
-                    <Content>
-                        <CuisinePicker cuisine={this.state.cuisine} handleInput={this.handleInput} />
-                        <SortBy sortby={this.state.sortby} handleInput={this.handleInput} />
-                    </Content>
-                    <Button
-                        title="Next"
-                        onPress={this.SearchFoods}
-                        color="#666"
-                    />
-
+                        }}>
+                            <CuisinePicker
+                                cuisine={this.state.cuisine}
+                                handleInput={this.handleInput}
+                            />
+                            <SortBy
+                                sortby={this.state.sortby}
+                                handleInput={this.handleInput} />
+                        </Content>
+                    </Body>
+                    <Body style={{ height: '3%' }}>
+                        {/* <Text></Text> */}
+                    </Body>
+                    <View style={styles.button}>
+                        <Button
+                            transparent
+                            light
+                            onPress={this.SearchFoods}
+                        >
+                            <Text style={styles.buttonTxt}>Next</Text>
+                        </Button>
+                    </View>
                 </ImageBackground>
-            </Container>
+            </Container >
         );
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1
+    button: {
+        backgroundColor: 'grey',
+        height: 70,
+        marginHorizontal: 20,
+        // marginTop: '30%',
+        borderRadius: 35,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginVertical: 5,
+        shadowOffset: { width: 2, height: 2 },
+        shadowColor: 'black',
+        shadowOpacity: 0.2,
+        elevation: 5,
+        opacity: 0.8
+        // fontFamily: 'IndieFlower-Regular',
     },
-    navBar: {
-        height: 110,
-        backgroundColor: '#f4871e',
-        elevation: 3,
-        flexDirection: 'row',
+    dateSel: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: '45%',
+        backgroundColor: 'white',
+        paddingBottom: 1,
+        height: 10,
+        opacity: 0.8,
+        borderRadius: 40
     },
-    leftNav: {
-        flexDirection: 'row',
-        paddingBottom: 20
-    },
-    navTitle: {
-        marginLeft: 25,
-        fontSize: 30,
-        alignContent: 'center',
+    buttonTxt: {
+        fontSize: 20,
+        fontWeight: 'bold',
         color: 'white'
-    },
-    body: {
-        flex: 1,
-        backgroundColor: 'red'
     }
 })

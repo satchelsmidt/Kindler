@@ -3,19 +3,22 @@ import {
   ScrollView,
   View,
   Text,
-  Button,
   AsyncStorage,
   StyleSheet,
   ImageBackground
 } from 'react-native';
 import DatePicker from '../../components/DateSelection';
 import 'react-navigation';
-import { Container, Content, Header, Body, Title } from 'native-base';
+import { Container, Content, Header, Body, Title, Button } from 'native-base';
 
 export default class DateSelection extends Component {
 
   state = {
     date: ''
+  }
+
+  static navigationOptions = {
+    header: null
   }
 
   _storeData = async (data) => {
@@ -46,18 +49,53 @@ export default class DateSelection extends Component {
       <Container>
         <ImageBackground
           style={{ width: '100%', height: '100%' }}
-          source={require('../../assets/images/stars_1.jpg')}
-        ><Text>Please Select a Date</Text>
-          <Content>
-            <DatePicker handleInput={this.handleInput} />
-          </Content>
-          <Button
-            title="Next"
-            onPress={this.submitDate}
-          />
+          source={require('../../assets/images/starryHand.jpg')}
+        >
+          <Body style={styles.dateSel}>
+            <Text style={{ fontWeight: 'bold', fontSize: 34, color: 'white' }}>Please Select a Date</Text>
+            <Content >
+              <DatePicker handleInput={this.handleInput} />
+            </Content>
+          </Body>
+          <View style={styles.button}>
+            <Button
+              transparent
+              light
+              onPress={this.submitDate}
+            >
+              <Text style={styles.buttonTxt}>Next</Text>
+            </Button>
+          </View>
         </ImageBackground>
       </Container>
     );
   }
 }
 
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: '#FD6051',
+    height: 70,
+    marginHorizontal: 20,
+    borderRadius: 35,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 5,
+    shadowOffset: { width: 2, height: 2 },
+    shadowColor: 'black',
+    shadowOpacity: 0.2,
+    elevation: 5,
+    opacity: 0.65
+    // fontFamily: 'IndieFlower-Regular',
+  },
+  dateSel: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: '35%'
+  },
+  buttonTxt: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white'
+  }
+})

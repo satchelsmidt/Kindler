@@ -3,13 +3,14 @@ import {
   ScrollView,
   View,
   Text,
-  Button,
+  // Button,
   AsyncStorage,
   Image,
   StyleSheet,
-  MaskedViewIOS
+  MaskedViewIOS,
+  ImageBackground
 } from 'react-native';
-import { Container, Content } from 'native-base';
+import { Container, Content, Button, Body } from 'native-base';
 import moment from 'moment';
 import 'react-navigation';
 // import MaskedViewIOS from '@react-native-community/masked-view';
@@ -24,6 +25,20 @@ export default class EventSelection extends React.Component {
     date: '',
     classification: '',
     genre: ''
+  }
+
+  static navigationOptions = {
+    headerStyle: {
+      // backgroundColor: 'rgba(128,128,128, 0.2)',
+      // headerTintColor: 'white'
+    },
+    title: 'Select some event options!',
+    headerTransparent: true,
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+
   }
 
   getDate = async (key) => {
@@ -121,24 +136,29 @@ export default class EventSelection extends React.Component {
       <Container>
         <ImageBackground
           style={{ width: '100%', height: '100%' }}
-          source={require('../../assets/images/theater_2.jpg')}
+          source={require('../../assets/images/event.jpg')}
         >
-          <Text>THIS IS THE EVENT SELECTION SCREEN</Text>
+          <Body style={styles.dateSel}>
+            <Content>
+              <EventCategorySelection classification=
+                {this.state.classification} handleInput=
+                {this.handleInput} />
 
-          <Content>
-            <EventCategorySelection classification=
-              {this.state.classification} handleInput=
-              {this.handleInput} />
-
-            <View>{this.renderOne()}</View>
-
-          </Content>
-
-          <Button
-            title="Next"
-            onPress={this.SearchEvents}
-          />
-
+              <View>{this.renderOne()}</View>
+            </Content>
+          </Body>
+          <Body style={{ height: '3%' }}>
+            {/* <Text></Text> */}
+          </Body>
+          <View style={styles.button}>
+            <Button
+              transparent
+              light
+              onPress={this.SearchEvents}
+            >
+              <Text style={styles.buttonTxt}>Next</Text>
+            </Button>
+          </View>
         </ImageBackground>
       </Container>
     );
@@ -159,6 +179,36 @@ const styles = StyleSheet.create({
   leftNav: {
     flexDirection: 'row',
     padding: 20
+  },
+  button: {
+    backgroundColor: '#FD6051',
+    height: 70,
+    marginHorizontal: 20,
+    borderRadius: 35,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 5,
+    shadowOffset: { width: 2, height: 2 },
+    shadowColor: 'black',
+    shadowOpacity: 0.2,
+    elevation: 5,
+    opacity: 0.65
+    // fontFamily: 'IndieFlower-Regular',
+  },
+  dateSel: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: '35%',
+    backgroundColor: 'white',
+    paddingBottom: 1,
+    height: 10,
+    opacity: 0.8,
+    borderRadius: 40
+  },
+  buttonTxt: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white'
   }
 })
 
