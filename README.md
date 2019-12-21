@@ -41,7 +41,6 @@ The following link shows a demo of the app, and walks through the entire flow fr
  * Deron Coffie
  * Cesar Silva
  * Satchel Smidt
-	State your role in the app development
 	
 ### Future Development
 
@@ -55,7 +54,7 @@ The following link shows a demo of the app, and walks through the entire flow fr
 * Make folder structure meet MVC criteria
   * Add front end to client folder
 
-Satchel:
+__Satchel__:
 * Make genre selection for events reflect user choice
 * In-app feedback/response when user selects date, all other categories, or
 swipes card
@@ -65,12 +64,12 @@ swipes card
 loaded
 * Remove outdated comments
 
-Deron: 
+__Deron__: 
 * Animations on page load + login
 * Add in 'staying in' option (after 'day' selection)
 * Consistent UI font styling, page animations/images
 * Add in ability to login with emails
 
-Cesar:
+__Cesar__:
 * To add
 
