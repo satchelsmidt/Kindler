@@ -26,7 +26,7 @@ export default class DeckSwiperExample extends Component {
   _retrieveData = async (keys) => {
     try {
       const value = await AsyncStorage.multiGet(keys);
-      console.log('value: ', value)
+      // console.log('value: ', value)
       const dateData = moment(value[0][1]).format('YYYY-MM-DD')
       const restaurantData = (JSON.parse(value[1][1]).data)
       const movieData = (JSON.parse(value[2][1]).data)
@@ -35,13 +35,13 @@ export default class DeckSwiperExample extends Component {
       const selectedCuisine = (value[5][1])
       const selectedEventType = (value[6][1])
 
-      console.log('date Data: ', dateData)
-      console.log('RESTAURANTS Data: ', restaurantData)
-      console.log('movie Data: ', movieData)
-      console.log('EVENT Data: ', eventData)
-      console.log('USER ID: ', userID)
-      console.log('SELECTED CUISINE: ', selectedCuisine)
-      console.log('SELECTED EVENT TYPE: ', selectedEventType)
+      // console.log('date Data: ', dateData)
+      // console.log('RESTAURANTS Data: ', restaurantData)
+      // console.log('movie Data: ', movieData)
+      // console.log('EVENT Data: ', eventData)
+      // console.log('USER ID: ', userID)
+      // console.log('SELECTED CUISINE: ', selectedCuisine)
+      // console.log('SELECTED EVENT TYPE: ', selectedEventType)
 
       this.setState({ dateData: dateData })
       this.setState({ restaurantData: restaurantData })
@@ -51,13 +51,13 @@ export default class DeckSwiperExample extends Component {
       this.setState({ selectedCuisine: selectedCuisine })
       this.setState({ selectedEventType: selectedEventType })
 
-      console.log('this is DATE STATE: ', this.state.dateData)
-      console.log('this is RESTAURANT STATE: ', this.state.restaurantData)
-      console.log('this is MOVIE STATE: ', this.state.movieData)
-      console.log('this is EVENT STATE: ', this.state.eventData)
+      // console.log('this is DATE STATE: ', this.state.dateData)
+      // console.log('this is RESTAURANT STATE: ', this.state.restaurantData)
+      // console.log('this is MOVIE STATE: ', this.state.movieData)
+      // console.log('this is EVENT STATE: ', this.state.eventData)
 
 
-      console.log('bIG TEST SITUATION:', this.state.restaurantData[0].name)
+      // console.log('bIG TEST SITUATION:', this.state.restaurantData[0].name)
 
     } catch (error) {
       console.log(error)
@@ -67,14 +67,14 @@ export default class DeckSwiperExample extends Component {
   // TODO: Actually send the data here to the server
   finalizeDate = () => {
 
-    console.log('BUTTON WORKS')
+    // console.log('BUTTON WORKS')
 
     axios({
       method: 'POST',
-      // headers: {
-      //   'Content-Type': 'application/json',
-      //   'Cache-Control': 'no-cache'
-      // },
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache'
+      },
       url: 'https://obscure-springs-29928.herokuapp.com/date/add_date',
       data: {
         "resturantID": this.state.selectedRestaurantID,
@@ -87,19 +87,20 @@ export default class DeckSwiperExample extends Component {
       .then(response => {
         console.log('RESPONSE: ', response.data)
       })
+      .catch(err => console.error(err))
 
     this.setState({ dateData: '' })
     this.setState({ restaurantData: '' })
     this.setState({ movieData: '' })
     this.setState({ eventData: '' })
-    console.log('data sent to server')
+    // console.log('data sent to server')
     this.props.navigation.navigate('Home')
 
   }
 
   storeRestaurantData = () => {
 
-    console.log("Selected Name:", this.state.selectedRestaurant.name)
+    // console.log("Selected Name:", this.state.selectedRestaurant.name)
 
     axios({
       method: 'POST',
@@ -120,15 +121,18 @@ export default class DeckSwiperExample extends Component {
         "type": this.state.selectedCuisine
       }
     }).then(response => {
-      console.log('AXIOS CALL COMPLETED')
-      console.log('RESPONSE: ', response)
-      this.setState({ selectedRestaurantID: response.data._id }, () => console.log("RESTAURANT ID THAT WE ARE STORING: ", this.state.selectedRestaurantID))
+      // console.log('AXIOS CALL COMPLETED')
+      // console.log('RESPONSE: ', response)
+      this.setState({ selectedRestaurantID: response.data._id }
+        , () => console.log("RESTAURANT ID THAT WE ARE STORING: ", this.state.selectedRestaurantID)
+        )
     })
+    .catch(err => console.error(err))
   }
 
   storeMovieData = () => {
 
-    console.log("Selected Name:", this.state.selectedMovie.name)
+    // console.log("Selected Name:", this.state.selectedMovie.name)
 
     axios({
       method: 'POST',
@@ -140,18 +144,21 @@ export default class DeckSwiperExample extends Component {
       data: {
         "movie": this.state.selectedMovie.name,
         "location": '47.6062, -122.3321',
-        "date": this.state.dateData
+        "date": "2019-11-18"
       }
     }).then(response => {
-      console.log('AXIOS CALL COMPLETED')
-      console.log('RESPONSE: ', response)
-      this.setState({ selectedMovieID: response.data[0].movies[0]._id }, () => console.log("ID THAT WE ARE STORING: ", this.state.selectedMovieID))
+      // console.log('AXIOS CALL COMPLETED')
+      // console.log('RESPONSE: ', response)
+      this.setState({ selectedMovieID: response.data[0].movies[0]._id }
+        , () => console.log("ID THAT WE ARE STORING: ", this.state.selectedMovieID)
+        )
     })
+    .catch(err => console.error(err))
   }
 
   storeEventData = () => {
 
-    console.log("Selected Name:", this.state.selectedEvent.name)
+    // console.log("Selected Name:", this.state.selectedEvent.name)
 
     axios({
       method: 'POST',
@@ -172,10 +179,13 @@ export default class DeckSwiperExample extends Component {
         "type": this.state.selectedEventType
       }
     }).then(response => {
-      console.log('AXIOS CALL COMPLETED')
-      console.log('RESPONSE: ', response)
-      this.setState({ selectedEventID: response.data._id }, () => console.log("EVENT ID THAT WE ARE STORING: ", this.state.selectedEventID))
+      // console.log('AXIOS CALL COMPLETED')
+      // console.log('RESPONSE: ', response)
+      this.setState({ selectedEventID: response.data._id }
+        , () => console.log("EVENT ID THAT WE ARE STORING: ", this.state.selectedEventID)
+        )
     })
+    .catch(err => console.error(err))
   }
 
   // TODO: storing restaurant data works as intended, now need to 
@@ -193,7 +203,7 @@ export default class DeckSwiperExample extends Component {
 
   saveMovieCard = (data) => {
 
-    console.log("date format for movies: ", this.state.dateData)
+    // console.log("date format for movies: ", this.state.dateData)
 
     this.setState(
       { selectedMovie: data },
@@ -231,7 +241,7 @@ export default class DeckSwiperExample extends Component {
               <DeckSwiper
                 dataSource={this.state.restaurantData}
                 // onSwipeRight={()=> this.saveRestaurantCard(item.name)}
-                onSwipeRight={item => console.log(item.name)}
+                // onSwipeRight={item => console.log(item.name)}
                 onSwipeRight={item => this.saveRestaurantCard({
                   "name": item.name,
                   "location": item.location,
@@ -272,7 +282,7 @@ export default class DeckSwiperExample extends Component {
             <View>
               <DeckSwiper
                 dataSource={this.state.eventData}
-                onSwipeRight={item => console.log(item.name)}
+                // onSwipeRight={item => console.log(item.name)}
                 onSwipeRight={item => this.saveEventCard({
                   "name": item.name,
                   "link": item.link,
@@ -311,7 +321,7 @@ export default class DeckSwiperExample extends Component {
             <View>
               <DeckSwiper
                 dataSource={this.state.movieData}
-                onSwipeRight={item => console.log(item.name)}
+                // onSwipeRight={item => console.log(item.name)}
                 onSwipeRight={item => this.saveMovieCard({
                   "name": item.name
                 })}
@@ -338,34 +348,6 @@ export default class DeckSwiperExample extends Component {
             </View>
           </Container>
 
-
-
-          {/* <Container>
-            <View style={{ flexDirection: 'column', justifyContent: 'space-between' }}>
-              <DeckSwiper
-                dataSource={this.state.restaurantData}
-                renderItem={item =>
-                  <Card style={{ elevation: 3 }}>
-                    <CardItem style={{ height: 200 }, { width: 200 }}>
-                      <Left>
-                        <Thumbnail source={foodStockImage} />
-                        <Body>
-                          <Text>{item.name}</Text>
-                          <Text note>Phone: {item.phone}</Text>
-                          <Text>Location: {item.location}</Text>
-                          <Text style={{paddingBottom: 20}}>Rating: {item.rating}</Text>
-                          <Text style={{ color: 'blue' }} onPress={() => Linking.openURL(item.menu_link)}>Menu</Text>
-                        </Body>
-                      </Left>
-                    </CardItem>
-                    <CardItem cardBody>
-                      <Image style={{ height: 300, flex: 1 }} source={{ uri: item.thumbnail }} />
-                    </CardItem>
-                  </Card>
-                }
-              />
-            </View>
-          </Container> */}
 
         </ScrollView>
         <Button title="Submit Date" onPress={() => this.finalizeDate()}></Button>
