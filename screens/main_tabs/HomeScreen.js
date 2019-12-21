@@ -111,6 +111,7 @@ export default class HomeScreen extends Component {
   refreshUserData = async () => {
 
     let otherUserData = await AsyncStorage.getItem("userData");
+    console.log(otherUserData)
 
     axios.get(`https://obscure-springs-29928.herokuapp.com/date/find_user/${otherUserData}`)
       .then(dbUser => {

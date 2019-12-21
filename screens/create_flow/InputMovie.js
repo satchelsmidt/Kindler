@@ -54,7 +54,10 @@ export default class FoodSelection extends Component {
   handleInput = (value, name) => {
     this.setState({
       [name]: value
-    }, () => console.log('genre after set: ', this.state.genre))
+    }, 
+    // () => 
+    // console.log('genre after set: ', this.state.genre)
+    )
   }
 
   render() {

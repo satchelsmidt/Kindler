@@ -37,10 +37,12 @@ export default class DateSelection extends Component {
   }
 
   handleInput = (value, name) => {
-    console.log('VALUE:', value)
+    // console.log('VALUE:', value)
     this.setState({
       [name]: value
-    }, () => console.log('date:', this.state.date))
+    }
+    // , () => console.log('date:', this.state.date)
+    )
   }
 
   render() {

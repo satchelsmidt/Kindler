@@ -44,13 +44,13 @@ export default class EventSelection extends React.Component {
   getDate = async (key) => {
     try {
       const value = await AsyncStorage.getItem(key);
-      console.log('Date we are retrieving:', value)
+      // console.log('Date we are retrieving:', value)
 
       const dateData = moment(value).format('YYYY-MM-DD')
-      console.log("this is DATE DATA: ", dateData)
+      // console.log("this is DATE DATA: ", dateData)
       this.setState({ date: dateData })
 
-      console.log("State of Date:", this.state.date)
+      // console.log("State of Date:", this.state.date)
     } catch (error) {
       console.log(error)
     }
@@ -69,7 +69,7 @@ export default class EventSelection extends React.Component {
   _storeEventClassification = async (data) => {
     try {
       await AsyncStorage.setItem('selectedEventType', JSON.stringify(data))
-      console.log("THE DATA WE SAVED: ", JSON.stringify(data))
+      // console.log("THE DATA WE SAVED: ", JSON.stringify(data))
       // alert("saved")
     } catch (error) {
       console.log(error)
@@ -92,8 +92,8 @@ export default class EventSelection extends React.Component {
       }
     })
       .then(response => {
-        console.log(this.state.classification)
-        console.log(response)
+        // console.log(this.state.classification)
+        // console.log(response)
         this.setState({ date: '' })
         this.props.navigation.navigate('Final')
         this._storeData(response)
@@ -111,7 +111,7 @@ export default class EventSelection extends React.Component {
   }
 
   handleInput = (value, name) => {
-    console.log("value:", value)
+    // console.log("value:", value)
     this.setState({
       [name]: value
     }, () => this._storeEventClassification(this.state.classification))

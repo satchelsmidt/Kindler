@@ -74,7 +74,7 @@ export default class FoodSelection extends Component {
                 offset: 0
             }
         }).then(response => {
-            console.log('RESPONSE: ', response)
+            // console.log('RESPONSE: ', response)
             this.props.navigation.navigate('Movie')
             this._storeData(response)
         })
@@ -82,7 +82,7 @@ export default class FoodSelection extends Component {
     }
 
     handleInput = (value, name) => {
-        console.log('VALUE:', value)
+        // console.log('VALUE:', value)
         this.setState({
             [name]: value
         }, () => this._storeFoodCuisine(this.state.cuisine))
