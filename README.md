@@ -49,8 +49,6 @@ The following link shows a demo of the app, and walks through the entire flow fr
 * Make UI consistent accross entire app
 * Remove .env file from public view
 * Work on readme for projcet (include videos, gifs, description)
-
-(later)
 * Make folder structure meet MVC criteria
   * Add front end to client folder
 
