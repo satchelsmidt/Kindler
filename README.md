@@ -23,7 +23,7 @@ Once data matching user preferences is returned, the user is shown a page with s
 
 The following link shows a demo of the app, and walks through the entire flow from a user perspective:
 
-<a href="https://www.youtube.com/watch?v=9QN2OPpL3Kc">Link</a>
+<a href="https://www.youtube.com/watch?v=9QN2OPpL3Kc" target="_blank">Link</a>
 
 
 ### Technology Used
