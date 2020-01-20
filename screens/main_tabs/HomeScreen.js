@@ -30,10 +30,6 @@ export default class HomeScreen extends Component {
     }
   }
 
-
-
-
-
   //load default fonts for native base
   async componentDidMount() {
     await Font.loadAsync({
@@ -60,17 +56,7 @@ export default class HomeScreen extends Component {
           .then(dbUser => {
             //axios get all user date information 
 
-
             this.setToken(dbUser.data[0]._id)
-
-            //   async setToken(user) {
-            //     try {
-            //         await AsyncStorage.setItem("userData", user)
-            //         console.log("storage success")
-            //     } catch (error) {
-            //         console.log("something went wrong: ", error)
-            //     }
-            // }
 
             axios.get(`https://obscure-springs-29928.herokuapp.com/date/all_dates/${dbUser.data[0]._id}`)
               .then(dbAllDates => {

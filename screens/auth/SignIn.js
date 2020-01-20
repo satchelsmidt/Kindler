@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 import { Image, AsyncStorage, ActivityIndicator, View } from 'react-native';
-// import axios from 'axios';
-// import LoginScreen from './Login';
-// import HomeScreen from '../main_tabs/HomeScreen';
 
 /*=====  Preloading images to prevent flicker when loading ======*/
 import { Asset } from 'expo-asset';
@@ -57,12 +54,10 @@ export default class GoogleSignIn extends Component {
   }
 
   goToLoginScreen = () => {
-    // console.log('Rendering home')
     this.props.navigation.navigate('Login')
   }
 
   goToHomeScreen = () => {
-    // console.log('STATE: ', this.state.userData)
     this.props.navigation.navigate('Home', { userData: this.state.userData })
   }
 

@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Container, Content } from 'native-base';
-import { View, Text, RefreshControl, SafeAreaView, Image } from 'react-native';
+import { View, RefreshControl, Image } from 'react-native';
 import ListOfItems from "../../components/DateList/List.component";
-import Constants from 'expo-constants';
 
 export default class DatesScreen extends Component {
+    
     static navigationOptions = {
         title: 'Saved Juicy Dates',
         headerStyle: {
@@ -36,10 +36,23 @@ export default class DatesScreen extends Component {
 
         let test = { uri: 'https://media.giphy.com/media/Mp0BJWd9nC5Y4/source.gif' }
         return (
-            <View style={{ alignItems: 'center', justifyContent: 'center', alignItems: 'center' }}>
-                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
+                <View style={{
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}>
                     <Image source={test}
-                        style={{ width: 250, height: 300, justifyContent: 'center', alignItems: 'center', marginTop: '40%' }}
+                        style={{
+                            width: 250,
+                            height: 300,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginTop: '40%'
+                        }}
                     />
                 </View>
             </View>
@@ -47,11 +60,8 @@ export default class DatesScreen extends Component {
     }
 
     onRefresh = async () => {
-        // setRefreshing(true);
         this.setState({ refreshing: true })
         this.props.screenProps.refresh()
-
-        // wait(2000).then(() => this.setState({ refreshing: false }));
 
         return new Promise((resolve) =>
             setTimeout(
@@ -65,18 +75,14 @@ export default class DatesScreen extends Component {
         //stock campfire image for each date
         let stockImage = require('../../assets/images/campfire.jpg')
         let data = this.props.screenProps.data
-        // let refreshUser = this.props.screenProps.refresh
-
-        // const [refreshing, setRefreshing] = React.useState(false);
-
-
 
         return (
-            <Container style={{backgroundColor: 'black'}}>
+            <Container style={{ backgroundColor: 'black' }}>
                 <Content
-                    // contentContainerStyle={styles.scrollView}
                     refreshControl={
-                        <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
+                        <RefreshControl
+                            refreshing={this.state.refreshing}
+                            onRefresh={this.onRefresh} />
                     }>
                     {/* Using data passed from the HomeScreen, generate each list item (the date) */}
                     {

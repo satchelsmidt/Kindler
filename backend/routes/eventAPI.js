@@ -1,6 +1,5 @@
 const router = require('express').Router()
 const axios = require('axios')
-//imports .env variables
 require('dotenv').config()
 //models
 const Event = require('../models/event.model')
@@ -168,7 +167,7 @@ let findID = (genre, classification) => {
 =            Routes                       =
 =============================================*/
 //get route to search all of Seattle by classification and muisc/sport/art ID
-router.route('/find_events').get((req, res) => {
+router.route('/find_events').post((req, res) => {
     const { date, classification, genre } = req.body
 
     axios.get(`https://app.ticketmaster.com/discovery/v2/events.json?city=seattle&localStartDateTime=${date}T00:00:00,${date}T23:00:00&size=5&classificationName=${classification}&genreId=${findID(genre, classification)}&apikey=${process.env.EVENT_KEY}`)
@@ -197,7 +196,7 @@ router.route('/find_events').get((req, res) => {
 
 //post route to add the selection to the db
 router.route('/store_event').post((req, res) => {
-    const { name, link, time, price, venue, image, address, date } = req.body
+    const { name, link, time, price, venue, image, address, date, classification } = req.body
 
     const newEvent = {
         name: name,
@@ -207,7 +206,8 @@ router.route('/store_event').post((req, res) => {
         venue: venue,
         image: image,
         address: address,
-        date: date
+        date: date,
+        type: classification
     }
 
     Event.create(newEvent)
@@ -217,10 +217,6 @@ router.route('/store_event').post((req, res) => {
         .catch(err => res.status(400).json('Error: ' + err))
 })
 /*=====  End of Routes  ======*/
-
-
-
-
 
 
 

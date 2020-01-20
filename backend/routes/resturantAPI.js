@@ -588,16 +588,24 @@ let testResturant = {
 let getFoodPictures = arr => {
     let pics = []
     let count = 0
-    //want 5 pictures from the object 
-    while (count < 5) {
-        //check if the restaurant has photos 
-        if (arr.photos !== undefined) {
-            //if the photos array is shorter than 5, it will return undefined at index = count 
-            if (arr.photos[count] !== undefined) {
-                //store the photo 
-                pics.push(arr.photos[count].photo.thumb_url)
-            }
-            ++count
+    // //want 5 pictures from the object 
+    // while (count < 5) {
+    //     //check if the restaurant has photos 
+    //     if (arr.photos !== undefined) {
+    //         //if the photos array is shorter than 5, it will return undefined at index = count 
+    //         if (arr.photos[count] !== undefined) {
+    //             //store the photo 
+    //             pics.push(arr.photos[count].photo.thumb_url)
+    //         }
+    //         count++
+    //     }
+    //     count++
+    // }
+    // return pics
+    for (let i = 0; i < arr.length; i++) {
+        pics.push(arr[i].photo.thumb_url)
+        if (pics.length > 4) {
+            return pics
         }
     }
     return pics
@@ -616,12 +624,12 @@ let getFoodPictures = arr => {
 */
 
 //generate 5 search results for the user 
-router.route('/get_resturants').get((req, res) => {
+router.route('/get_resturants').post((req, res) => {
     /*
         User - defines cuisine, sortBy (location, price, rating)
         Controller - provides location (lat, long), offest (start at 0) by 5(?) if user decides to reshuffle
     */
-    const { cuisine, sortBy, location, offset } = req.body
+    let { cuisine, sortBy, location, offset } = req.body
 
     //convert the cuisine to the id
     for (let i = 0; i < cuisines.length; i++) {
@@ -645,7 +653,8 @@ router.route('/get_resturants').get((req, res) => {
                     times: r.restaurant.timings,
                     thumbnail: r.restaurant.featured_image,
                     rating: r.restaurant.user_rating.aggregate_rating,
-                    food_photos: getFoodPictures(r.restaurant),
+                    food_photos: getFoodPictures(r.restaurant.photos
+                    ),
                     phone: r.restaurant.phone_numbers,
                     menu_link: r.restaurant.menu_url
                 }
@@ -665,7 +674,7 @@ router.route('/get_resturants').get((req, res) => {
 //so once the user selects the resturant, store into db, and return ID of the document so we can store and associate with date model
 router.route('/store_resturant').post((req, res) => {
     //will recieve these values
-    const { name, location, times, thumbnail, rating, food_photos, phone, menu_link } = req.body
+    const { name, location, times, thumbnail, rating, food_photos, phone, menu_link, cuisine } = req.body
 
     const newResturant = {
         name: name,
@@ -675,7 +684,8 @@ router.route('/store_resturant').post((req, res) => {
         rating: rating,
         food_photos: food_photos,
         phone: phone,
-        menu_link: menu_link
+        menu_link: menu_link,
+        type: cuisine
     }
     //add the selected resturant to the db
     Resturant.create(newResturant)
