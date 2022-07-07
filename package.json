@@ -27,7 +27,7 @@
     "expo-google-app-auth": "^7.0.0",
     "expo-web-browser": "~7.0.1",
     "express": "^4.17.1",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "mongoose": "^5.7.12",
     "native-base": "^2.13.8",
     "nightmare": "^3.0.2",
